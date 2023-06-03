@@ -6,22 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Entity
-@Table(name = "account_role")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Entity
+@Table(name = "role_entity")
 public class RoleEntity {
     @Id
-    @GeneratedValue
-    private Long id;
-    private Long roleName;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long roleId;
+    private String roleName;
 }
 
 
