@@ -1,0 +1,24 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8082/eureka
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes :
+        - id : demo-service
+          uri: lb://demo-service
+          predicates:
+            - Path=/demo/**
+          filters:
+            - CustomFilter
+        - id: auth-service
+          uri: lb://auth-server-test
+          predicates:
+            - Path= /auth/**
+
+
