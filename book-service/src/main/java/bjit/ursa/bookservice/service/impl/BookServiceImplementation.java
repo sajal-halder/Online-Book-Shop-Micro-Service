@@ -2,13 +2,12 @@ package bjit.ursa.bookservice.service.impl;
 
 import bjit.ursa.bookservice.entity.BookEntity;
 import bjit.ursa.bookservice.exception.BookServiceException;
+import bjit.ursa.bookservice.model.APIResponse;
 import bjit.ursa.bookservice.repository.BookRepository;
 import bjit.ursa.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class BookServiceImplementation implements BookService {
     private final BookRepository bookRepository;
     @Override
     @Transactional
-    public ResponseEntity<Object> addBooks(BookEntity bookEntity) {
+    public ResponseEntity<APIResponse> addBooks(BookEntity bookEntity) {
 
         String bookName = bookEntity.getBookName();
         String genre = bookEntity.getAuthorName();
@@ -42,7 +41,14 @@ public class BookServiceImplementation implements BookService {
             bookRepository.save(book);
 
             if(book != null){
-                return new ResponseEntity<>("Book is created successfully", HttpStatus.CREATED);
+                // Prepare the APIResponse object
+                APIResponse<BookEntity> apiResponse = APIResponse.<BookEntity>builder()
+                        .data(book)
+                        .build();
+
+                // Return the ResponseEntity with the APIResponse
+                return ResponseEntity.ok(apiResponse);
+
             }else{
                 throw new BookServiceException("Failed to added the book.");
             }
@@ -52,9 +58,10 @@ public class BookServiceImplementation implements BookService {
 
     }
 
+
     @Override
     @Transactional
-    public ResponseEntity<Object> getAllBooks() {
+    public ResponseEntity<APIResponse> getAllBooks() {
         List<BookEntity> books = bookRepository.findAll();
         if (books.isEmpty()) {
             throw new BookServiceException("There is no book available in the stock");
@@ -69,12 +76,20 @@ public class BookServiceImplementation implements BookService {
                         .build()
         ));
 
-        return ResponseEntity.ok(bookResponses);
+        APIResponse apiResponse = APIResponse.builder()
+                .data(bookResponses)
+                .build();
+
+         //Return the ResponseEntity with the APIResponse
+        return ResponseEntity.ok((APIResponse) apiResponse);
+
+
+       // return ResponseEntity.ok(bookResponses);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<Object> updateBooks(Long bookId , BookEntity bookEntity) {
+    public ResponseEntity<APIResponse> updateBooks(Long bookId , BookEntity bookEntity) {
 
         try {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
@@ -89,7 +104,16 @@ public class BookServiceImplementation implements BookService {
                 // Save the updated book entity
                 BookEntity updatedBook = bookRepository.save(book);
 
-                return new ResponseEntity<>(updatedBook, HttpStatus.OK);
+
+                APIResponse apiResponse = APIResponse.builder()
+                        .data(updatedBook)
+                        .build();
+
+                // Return the ResponseEntity with the APIResponse
+                return ResponseEntity.ok(apiResponse);
+
+
+                //return new ResponseEntity<>(updatedBook, HttpStatus.OK);
             } else {
                 throw new BookServiceException("Book not found");
             }
@@ -114,11 +138,19 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> getBookById(Long bookId) {
+    public ResponseEntity<APIResponse> getBookById(Long bookId) {
         try {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isPresent()) {
-                return ResponseEntity.ok(optionalBook.get());
+
+                APIResponse<BookEntity> apiResponse = APIResponse.<BookEntity>builder()
+                        .data(optionalBook.get())
+                        .build();
+
+                // Return the ResponseEntity with the APIResponse
+                return ResponseEntity.ok(apiResponse);
+
+                //return ResponseEntity.ok(optionalBook.get());
             } else {
                 throw new BookServiceException("Book not found");
             }

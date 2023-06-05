@@ -1,6 +1,7 @@
 package bjit.ursa.bookservice.controller;
 
 import bjit.ursa.bookservice.entity.BookEntity;
+import bjit.ursa.bookservice.model.APIResponse;
 import bjit.ursa.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ public class BookController {
 
     private final BookService bookService ;
     @PostMapping("/create")
-    public ResponseEntity<Object> createBooks(@RequestBody BookEntity bookEntity){
+    public ResponseEntity<APIResponse> createBooks(@RequestBody BookEntity bookEntity){
         return bookService.addBooks(bookEntity);
     }
 
@@ -24,17 +25,17 @@ public class BookController {
     }
 
     @PutMapping("/update/bookId/{bookId}")
-    public ResponseEntity<Object> updateBook(@RequestParam Long bookId , @RequestBody BookEntity bookEntity) {
+    public ResponseEntity<APIResponse> updateBook(@RequestParam Long bookId , @RequestBody BookEntity bookEntity) {
         return bookService.updateBooks(bookId , bookEntity);
     }
 
     @GetMapping("/book/all")
-    public ResponseEntity<Object> getAllBooks() {
+    public ResponseEntity<APIResponse> getAllBooks() {
         return bookService.getAllBooks();
     }
 
     @GetMapping("/id/{bookId}")
-    public ResponseEntity<Object> getBookById(@PathVariable Long bookId) {
+    public ResponseEntity<APIResponse> getBookById(@PathVariable Long bookId) {
         return bookService.getBookById(bookId);
     }
 }
