@@ -21,8 +21,8 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     RequestMatcher[] requestMatchers = new RequestMatcher[] {
-            new AntPathRequestMatcher("/register"),
-            new AntPathRequestMatcher("/login"),
+            new AntPathRequestMatcher("/auth-server/register"),
+            new AntPathRequestMatcher("/auth-server/login"),
 
     };
     @Bean

@@ -16,9 +16,9 @@ spring:
             - Path=/demo/**
           filters:
             - CustomFilter
-        - id: auth-service
-          uri: lb://auth-server-test
+        - id: auth-server
+          uri: lb://auth-server
           predicates:
-            - Path= /auth/**
+            - Path=/auth-server/**
 
 

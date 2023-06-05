@@ -9,9 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -50,6 +48,10 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ){
+        var authorities = userDetails.getAuthorities();
+        List<String> roles = new ArrayList<>();
+        authorities.forEach(a->roles.add(a.getAuthority()));
+        extraClaims.put("authorities",roles);
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
