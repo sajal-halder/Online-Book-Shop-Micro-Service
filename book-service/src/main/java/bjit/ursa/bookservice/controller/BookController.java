@@ -19,12 +19,12 @@ public class BookController {
     }
 
     @DeleteMapping("/delete/{bookId}")
-    public ResponseEntity<Object> deleteBookById(@PathVariable long bookId) {
+    public ResponseEntity<Object> deleteBookById(@PathVariable Long bookId) {
         return ResponseEntity.ok(bookService.deleteBookById(bookId));
     }
 
     @PutMapping("/update/bookId/{bookId}")
-    public ResponseEntity<Object> updateBook(@RequestParam long bookId , @RequestBody BookEntity bookEntity) {
+    public ResponseEntity<Object> updateBook(@RequestParam Long bookId , @RequestBody BookEntity bookEntity) {
         return bookService.updateBooks(bookId , bookEntity);
     }
 
@@ -34,7 +34,7 @@ public class BookController {
     }
 
     @GetMapping("/id/{bookId}")
-    public ResponseEntity<Object> getBookById(@PathVariable long bookId) {
+    public ResponseEntity<Object> getBookById(@PathVariable Long bookId) {
         return bookService.getBookById(bookId);
     }
 }
