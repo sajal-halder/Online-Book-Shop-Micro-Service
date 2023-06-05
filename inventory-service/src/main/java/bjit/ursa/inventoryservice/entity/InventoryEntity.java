@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Inventory")
+@Table(name = "bookInventory")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +17,6 @@ public class InventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
-    private String bookPrice;
-    private String bookQuantity;
+    private double bookPrice;
+    private Integer bookQuantity;
 }

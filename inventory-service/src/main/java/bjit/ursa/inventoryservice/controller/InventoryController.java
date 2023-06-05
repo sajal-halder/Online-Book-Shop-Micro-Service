@@ -1,5 +1,7 @@
 package bjit.ursa.inventoryservice.controller;
 
+import bjit.ursa.inventoryservice.entity.InventoryEntity;
+import bjit.ursa.inventoryservice.model.APIResponse;
 import bjit.ursa.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,24 +14,24 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @PostMapping("/update/bookId")
-    public ResponseEntity<Object> update() {
-
+    @PutMapping("/update/{bookId}")
+    public ResponseEntity<APIResponse> updateInventory(@PathVariable Long bookId, @RequestBody InventoryEntity inventoryEntity) {
+        return inventoryService.updateBooks(bookId, inventoryEntity);
     }
 
-    @GetMapping("/book-id")
-    public ResponseEntity<Object> fetchId() {
+    @GetMapping("/{bookId}")
+    public ResponseEntity<APIResponse> fetchId(@PathVariable Long bookId) {
+        return inventoryService.fetchId(bookId);
 
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<Object> fetchAllData() {
-
+    public ResponseEntity<APIResponse> fetchAllData() {
+        return inventoryService.fetchAllData();
     }
 
-    @DeleteMapping("/delete/bookId")
-    public ResponseEntity<Object> fetch() {
-
+    @DeleteMapping("/delete/{bookId}")
+    public ResponseEntity<APIResponse> deleteInventoryById(@PathVariable Long bookId) {
+        return inventoryService.deleteInventoryById(bookId);
     }
-
 }
