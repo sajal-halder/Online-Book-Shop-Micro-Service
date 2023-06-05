@@ -74,7 +74,7 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> updateBooks(Integer bookId , BookEntity bookEntity) {
+    public ResponseEntity<Object> updateBooks(long bookId , BookEntity bookEntity) {
 
         try {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
@@ -99,7 +99,7 @@ public class BookServiceImplementation implements BookService {
     }
     @Override
     @Transactional
-    public String deleteBookById(Integer bookId) {
+    public String deleteBookById(long bookId) {
         try {
             if (bookRepository.existsById(bookId)) {
                 bookRepository.deleteById(bookId);
@@ -114,7 +114,7 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> getBookById(Integer bookId) {
+    public ResponseEntity<Object> getBookById(long bookId) {
         try {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isPresent()) {

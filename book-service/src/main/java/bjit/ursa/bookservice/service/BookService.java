@@ -8,9 +8,9 @@ public interface BookService {
 
     ResponseEntity<Object> getAllBooks();
 
-    ResponseEntity<Object> updateBooks(Integer bookId , BookEntity bookEntity);
+    ResponseEntity<Object> updateBooks(long bookId , BookEntity bookEntity);
 
-    String deleteBookById(Integer bookId);
+    String deleteBookById(long bookId);
 
-    ResponseEntity<Object> getBookById(Integer bookId);
+    ResponseEntity<Object> getBookById(long bookId);
 }
