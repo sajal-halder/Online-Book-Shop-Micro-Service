@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Online-Book-Shop-Micro-Service.iml" filepath="$PROJECT_DIR$/.idea/Online-Book-Shop-Micro-Service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Online-Book-Shop-Micro-Service.auth-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Online-Book-Shop-Micro-Service.auth-server.main.iml" />
     </modules>
   </component>
 </project>

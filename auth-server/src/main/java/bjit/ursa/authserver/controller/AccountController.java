@@ -5,6 +5,7 @@ import bjit.ursa.authserver.model.LoginRequest;
 import bjit.ursa.authserver.model.RegisterRequest;
 import bjit.ursa.authserver.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,12 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/register")
-    public APIResponse accountRegister(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<APIResponse> accountRegister(@RequestBody RegisterRequest registerRequest){
         return accountService.register(registerRequest);
     }
 
     @PostMapping("/login")
-    public APIResponse accountLogin(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<APIResponse> accountLogin(@RequestBody LoginRequest loginRequest){
         return accountService.login(loginRequest);
     }
 
