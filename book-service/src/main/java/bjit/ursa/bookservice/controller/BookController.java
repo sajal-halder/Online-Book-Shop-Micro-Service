@@ -20,12 +20,12 @@ public class BookController {
     }
 
     @DeleteMapping("/delete/{bookId}")
-    public ResponseEntity<Object> deleteBookById(@PathVariable Long bookId) {
-        return ResponseEntity.ok(bookService.deleteBookById(bookId));
+    public ResponseEntity<APIResponse> deleteBookById(@PathVariable Long bookId) {
+        return bookService.deleteBookById(bookId);
     }
 
     @PutMapping("/update/bookId/{bookId}")
-    public ResponseEntity<APIResponse> updateBook(@RequestParam Long bookId , @RequestBody BookEntity bookEntity) {
+    public ResponseEntity<APIResponse> updateBook(@PathVariable Long bookId , @RequestBody BookEntity bookEntity) {
         return bookService.updateBooks(bookId , bookEntity);
     }
 

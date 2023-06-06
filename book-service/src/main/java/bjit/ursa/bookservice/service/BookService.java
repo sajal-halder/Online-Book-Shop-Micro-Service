@@ -11,7 +11,7 @@ public interface BookService {
 
     ResponseEntity<APIResponse> updateBooks(Long bookId , BookEntity bookEntity);
 
-    String deleteBookById(Long bookId);
+    ResponseEntity<APIResponse> deleteBookById(Long bookId);
 
     ResponseEntity<APIResponse> getBookById(Long bookId);
 }

@@ -1,6 +1,7 @@
 package bjit.ursa.bookservice.service.impl;
 
 import bjit.ursa.bookservice.entity.BookEntity;
+import bjit.ursa.bookservice.entity.InventoryEntity;
 import bjit.ursa.bookservice.exception.BookServiceException;
 import bjit.ursa.bookservice.model.APIResponse;
 import bjit.ursa.bookservice.repository.BookRepository;
@@ -9,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +21,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookServiceImplementation implements BookService {
 
+   // private RestTemplate restTemplate;
+
     private final BookRepository bookRepository;
     @Override
     @Transactional
     public ResponseEntity<APIResponse> addBooks(BookEntity bookEntity) {
+
+
+//        String genre = bookEntity.getGenre();
+//        double price = bookEntity.getPrice();
+//        int quantity = bookEntity.getQuantity();
+
+//        ResponseEntity<InventoryEntity> responseEntity = restTemplate
+//                .getForEntity("http://localhost:8083/book-inventory/update/{bookId}" + bookEntity.getBook_id(),
+//                        InventoryEntity.class);
+
+
+     ///   InventoryEntity inventoryEntity = responseEntity.getBody();
+
 
         String bookName = bookEntity.getBookName();
         String genre = bookEntity.getAuthorName();
@@ -42,7 +61,7 @@ public class BookServiceImplementation implements BookService {
 
             if(book != null){
                 // Prepare the APIResponse object
-                APIResponse<BookEntity> apiResponse = APIResponse.<BookEntity>builder()
+                APIResponse apiResponse = APIResponse.builder()
                         .data(book)
                         .build();
 
@@ -104,6 +123,9 @@ public class BookServiceImplementation implements BookService {
                 // Save the updated book entity
                 BookEntity updatedBook = bookRepository.save(book);
 
+                // Commit the transaction before returning the response
+                // This ensures that the changes are persisted in the database
+                TransactionAspectSupport.currentTransactionStatus().flush();
 
                 APIResponse apiResponse = APIResponse.builder()
                         .data(updatedBook)
@@ -113,21 +135,32 @@ public class BookServiceImplementation implements BookService {
                 return ResponseEntity.ok(apiResponse);
 
 
-                //return new ResponseEntity<>(updatedBook, HttpStatus.OK);
+               // return new ResponseEntity<>(updatedBook, HttpStatus.OK);
             } else {
                 throw new BookServiceException("Book not found");
             }
         }catch (Exception e){
+
             throw  new BookServiceException("An error occurred while retrieving the book by ID");
         }
     }
     @Override
     @Transactional
-    public String deleteBookById(Long bookId) {
+    public ResponseEntity<APIResponse> deleteBookById(Long bookId) {
         try {
             if (bookRepository.existsById(bookId)) {
                 bookRepository.deleteById(bookId);
-                return "Book is deleted successfully";
+                //return "Book is deleted successfully";
+
+                List<String> list = new ArrayList<>();
+                String message ="Book is deleted successfully";
+                list.add(message);
+                APIResponse apiResponse = APIResponse.builder()
+                        .data(list)
+                        .build();
+
+                // Return the ResponseEntity with the APIResponse
+                return ResponseEntity.ok(apiResponse);
             } else {
                 throw new BookServiceException("Book not found");
             }
