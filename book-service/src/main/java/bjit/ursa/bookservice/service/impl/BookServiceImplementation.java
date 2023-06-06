@@ -1,9 +1,10 @@
 package bjit.ursa.bookservice.service.impl;
 
 import bjit.ursa.bookservice.entity.BookEntity;
-import bjit.ursa.bookservice.entity.InventoryEntity;
 import bjit.ursa.bookservice.exception.BookServiceException;
 import bjit.ursa.bookservice.model.APIResponse;
+import bjit.ursa.bookservice.model.BookModel;
+import bjit.ursa.bookservice.model.InventoryModel;
 import bjit.ursa.bookservice.repository.BookRepository;
 import bjit.ursa.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -24,53 +25,47 @@ public class BookServiceImplementation implements BookService {
    // private RestTemplate restTemplate;
 
     private final BookRepository bookRepository;
+    private final RestTemplate restTemplate;
     @Override
     @Transactional
-    public ResponseEntity<APIResponse> addBooks(BookEntity bookEntity) {
+    public ResponseEntity<APIResponse> addBooks(BookModel bookModel) {
 
+        String authorName = bookModel.getAuthorName();
+        String bookName = bookModel.getBookName();
+        String genre = bookModel.getGenre();
+        InventoryModel inventoryModel = InventoryModel.builder()
+                .bookPrice(bookModel.getPrice())
+                .bookQuantity(bookModel.getQuantity())
+                .build();
 
-//        String genre = bookEntity.getGenre();
-//        double price = bookEntity.getPrice();
-//        int quantity = bookEntity.getQuantity();
-
-//        ResponseEntity<InventoryEntity> responseEntity = restTemplate
-//                .getForEntity("http://localhost:8083/book-inventory/update/{bookId}" + bookEntity.getBook_id(),
-//                        InventoryEntity.class);
-
-
-     ///   InventoryEntity inventoryEntity = responseEntity.getBody();
-
-
-        String bookName = bookEntity.getBookName();
-        String genre = bookEntity.getAuthorName();
-
-        BookEntity book;
 
         // Check if the book already exists
-        if (bookRepository.existsByBookNameAndAuthorName(bookName, genre)) {
-            throw new BookServiceException("A book with the same name and genre already exists.");
+        if (bookRepository.findByBookNameAndAuthorName(bookName, authorName).isPresent()) {
+            throw new BookServiceException("A book with the same name and author already exists.");
         }
 
         try {
-            book = BookEntity.builder()
-                    .bookName(bookEntity.getBookName())
-                    .authorName(bookEntity.getAuthorName())
-                    .genre(bookEntity.getGenre())
+            BookEntity book = BookEntity.builder()
+                    .bookName(bookName)
+                    .authorName(authorName)
+                    .genre(genre)
                     .build();
             bookRepository.save(book);
-
-            if(book != null){
-                // Prepare the APIResponse object
-                APIResponse apiResponse = APIResponse.builder()
-                        .data(book)
-                        .build();
-
-                // Return the ResponseEntity with the APIResponse
-                return ResponseEntity.ok(apiResponse);
-
-            }else{
-                throw new BookServiceException("Failed to added the book.");
+            //api call to inventory service
+            APIResponse<InventoryModel> response =restTemplate.postForObject("http://localhost:9094/update/" + book.getBook_id(),
+                            inventoryModel,
+                            APIResponse.class);
+            if(response.getData() == null){
+                throw new BookServiceException("from inventory "+response.getError_message());
             }
+             bookModel.setBook_id(book.getBook_id());
+            APIResponse apiResponse = APIResponse.builder()
+                    .data(bookModel)
+                    .build();
+
+            // Return the ResponseEntity with the APIResponse
+            return ResponseEntity.ok(apiResponse);
+
         }catch (Exception e) {
             throw new BookServiceException("An error occurred while adding the book.");
         }

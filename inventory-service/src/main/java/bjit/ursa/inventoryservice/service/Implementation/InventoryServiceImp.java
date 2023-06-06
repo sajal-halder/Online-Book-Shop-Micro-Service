@@ -20,30 +20,22 @@ public class InventoryServiceImp implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
 
-//    public ResponseEntity<Object> create(InventoryEntity inventoryEntity) {
-//        InventoryEntity bookEntity = InventoryEntity.builder()
-//                .bookId(inventoryEntity.getBookId())
-//                .bookPrice(inventoryEntity.getBookPrice())
-//                .bookQuantity(inventoryEntity.getBookQuantity())
-//                .build();
-//        InventoryEntity savedInventoryEntity = inventoryRepository.save(bookEntity);
-//        return new ResponseEntity<>(savedInventoryEntity, HttpStatus.CREATED);
-//    }
+
 
     @Transactional
     @Override
-    public ResponseEntity<APIResponse> updateBooks(Long bookId, InventoryEntity inventoryEntity) {
+    public ResponseEntity<APIResponse> updateBooks(Long bookId, InventoryEntity request) {
         try {
             Optional<InventoryEntity> updateInventory = inventoryRepository.findById(bookId);
 
             if (updateInventory.isPresent()) {
-                InventoryEntity Inventory = updateInventory.get();
+                InventoryEntity inventoryEntity = updateInventory.get();
                 // Update the book entity with the new values from the request model
-                Inventory.setBookPrice(inventoryEntity.getBookPrice());
-                Inventory.setBookQuantity(inventoryEntity.getBookQuantity());
+                inventoryEntity.setBookPrice(request.getBookPrice());
+                inventoryEntity.setBookQuantity(request.getBookQuantity());
 
                 // Save the updated book entity
-                InventoryEntity updatedBook = inventoryRepository.save(Inventory);
+                InventoryEntity updatedBook = inventoryRepository.save(inventoryEntity);
 
 
                 APIResponse apiResponse = APIResponse.builder()
@@ -54,9 +46,9 @@ public class InventoryServiceImp implements InventoryService {
 
             } else {
                 InventoryEntity bookEntity = InventoryEntity.builder()
-                        .bookId(inventoryEntity.getBookId())
-                        .bookPrice(inventoryEntity.getBookPrice())
-                        .bookQuantity(inventoryEntity.getBookQuantity())
+                        .bookId(bookId)
+                        .bookPrice(request.getBookPrice())
+                        .bookQuantity(request.getBookQuantity())
                         .build();
                 InventoryEntity savedInventoryEntity = inventoryRepository.save(bookEntity);
                 APIResponse apiResponse = APIResponse.builder()
@@ -85,7 +77,7 @@ public class InventoryServiceImp implements InventoryService {
                 throw new InventoryServiceException("Not Found");
             }
         } catch (Exception e) {
-            throw new InventoryServiceException("Error");
+            throw new InventoryServiceException(e.getMessage());
         }
     }
 

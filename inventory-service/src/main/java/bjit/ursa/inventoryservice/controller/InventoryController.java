@@ -7,14 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/book-inventory")
 @RequiredArgsConstructor
 public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @PutMapping("/update/{bookId}")
+    @PostMapping("/update/{bookId}")
     public ResponseEntity<APIResponse> updateInventory(@PathVariable Long bookId, @RequestBody InventoryEntity inventoryEntity) {
         return inventoryService.updateBooks(bookId, inventoryEntity);
     }
@@ -25,8 +26,8 @@ public class InventoryController {
 
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<APIResponse> fetchAllData() {
+    @GetMapping("/")
+    public ResponseEntity<APIResponse> fetchAllData(@RequestParam List<Long> id) {
         return inventoryService.fetchAllData();
     }
 

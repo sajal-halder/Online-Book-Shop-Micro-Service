@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Online-Book-Shop-Micro-Service.iml" filepath="$PROJECT_DIR$/.idea/Online-Book-Shop-Micro-Service.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/auth-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auth-server.main.iml" />
     </modules>
   </component>
 </project>

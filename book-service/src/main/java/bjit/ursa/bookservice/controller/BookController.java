@@ -2,21 +2,21 @@ package bjit.ursa.bookservice.controller;
 
 import bjit.ursa.bookservice.entity.BookEntity;
 import bjit.ursa.bookservice.model.APIResponse;
+import bjit.ursa.bookservice.model.BookModel;
 import bjit.ursa.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/book-service")
 @RequiredArgsConstructor
 
 public class BookController {
 
     private final BookService bookService ;
     @PostMapping("/create")
-    public ResponseEntity<APIResponse> createBooks(@RequestBody BookEntity bookEntity){
-        return bookService.addBooks(bookEntity);
+    public ResponseEntity<APIResponse> createBooks(@RequestBody BookModel bookModel){
+        return bookService.addBooks(bookModel);
     }
 
     @DeleteMapping("/delete/{bookId}")

@@ -1,4 +1,4 @@
-package bjit.ursa.bookservice.entity;
+package bjit.ursa.bookservice.model;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventoryEntity {
+public class InventoryModel {
     private Long bookId;
     private double bookPrice;
     private Integer bookQuantity;
