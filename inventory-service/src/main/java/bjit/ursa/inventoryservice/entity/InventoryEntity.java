@@ -15,6 +15,6 @@ import javax.persistence.*;
 public class InventoryEntity {
     @Id
     private Long bookId;
-    private double bookPrice;
+    private Double bookPrice;
     private Integer bookQuantity;
 }

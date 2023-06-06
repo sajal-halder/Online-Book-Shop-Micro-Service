@@ -6,13 +6,13 @@ import bjit.ursa.bookservice.model.BookModel;
 import org.springframework.http.ResponseEntity;
 
 public interface BookService {
-    ResponseEntity<APIResponse> addBooks(BookModel bookModel);
+    ResponseEntity<APIResponse<?>> addBooks(BookModel bookModel);
 
-    ResponseEntity<APIResponse> getAllBooks();
+    ResponseEntity<APIResponse<?>> getAllBooks();
 
-    ResponseEntity<APIResponse> updateBooks(Long bookId , BookEntity bookEntity);
+    ResponseEntity<APIResponse<?>> updateBooks(Long bookId , BookModel bookModel);
 
-    ResponseEntity<APIResponse> deleteBookById(Long bookId);
+    ResponseEntity<APIResponse<?>> deleteBookById(Long bookId);
 
-    ResponseEntity<APIResponse> getBookById(Long bookId);
+    ResponseEntity<APIResponse<?>> getBookById(Long bookId);
 }

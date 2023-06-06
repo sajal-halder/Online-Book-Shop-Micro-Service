@@ -15,27 +15,27 @@ public class BookController {
 
     private final BookService bookService ;
     @PostMapping("/create")
-    public ResponseEntity<APIResponse> createBooks(@RequestBody BookModel bookModel){
+    public ResponseEntity<APIResponse<?>> createBooks(@RequestBody BookModel bookModel){
         return bookService.addBooks(bookModel);
     }
 
     @DeleteMapping("/delete/{bookId}")
-    public ResponseEntity<APIResponse> deleteBookById(@PathVariable Long bookId) {
+    public ResponseEntity<APIResponse<?>> deleteBookById(@PathVariable Long bookId) {
         return bookService.deleteBookById(bookId);
     }
 
-    @PutMapping("/update/bookId/{bookId}")
-    public ResponseEntity<APIResponse> updateBook(@PathVariable Long bookId , @RequestBody BookEntity bookEntity) {
-        return bookService.updateBooks(bookId , bookEntity);
+    @PutMapping("/update/{bookId}")
+    public ResponseEntity<APIResponse<?>> updateBook(@PathVariable Long bookId , @RequestBody BookModel bookModel) {
+        return bookService.updateBooks(bookId , bookModel);
     }
 
     @GetMapping("/book/all")
-    public ResponseEntity<APIResponse> getAllBooks() {
+    public ResponseEntity<APIResponse<?>> getAllBooks() {
         return bookService.getAllBooks();
     }
 
-    @GetMapping("/id/{bookId}")
-    public ResponseEntity<APIResponse> getBookById(@PathVariable Long bookId) {
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<APIResponse<?>> getBookById(@PathVariable Long bookId) {
         return bookService.getBookById(bookId);
     }
 }

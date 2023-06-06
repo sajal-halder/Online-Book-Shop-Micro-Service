@@ -24,7 +24,7 @@ public class InventoryServiceImp implements InventoryService {
 
     @Transactional
     @Override
-    public ResponseEntity<APIResponse> updateBooks(Long bookId, InventoryEntity request) {
+    public ResponseEntity<APIResponse<?>> updateBooks(Long bookId, InventoryEntity request) {
         try {
             Optional<InventoryEntity> updateInventory = inventoryRepository.findById(bookId);
 
@@ -38,9 +38,7 @@ public class InventoryServiceImp implements InventoryService {
                 InventoryEntity updatedBook = inventoryRepository.save(inventoryEntity);
 
 
-                APIResponse apiResponse = APIResponse.builder()
-                        .data(updatedBook)
-                        .build();
+                APIResponse<InventoryEntity> apiResponse = new APIResponse<InventoryEntity>(updatedBook,null);
 
                 return ResponseEntity.ok(apiResponse);
 
@@ -51,9 +49,7 @@ public class InventoryServiceImp implements InventoryService {
                         .bookQuantity(request.getBookQuantity())
                         .build();
                 InventoryEntity savedInventoryEntity = inventoryRepository.save(bookEntity);
-                APIResponse apiResponse = APIResponse.builder()
-                        .data(savedInventoryEntity)
-                        .build();
+                APIResponse<InventoryEntity> apiResponse = new APIResponse<InventoryEntity>(savedInventoryEntity,null);
                 return ResponseEntity.ok(apiResponse);
             }
         } catch (Exception e) {
@@ -63,12 +59,12 @@ public class InventoryServiceImp implements InventoryService {
 
     @Override
     @Transactional
-    public ResponseEntity<APIResponse> fetchId(Long bookId) {
+    public ResponseEntity<APIResponse<?>> fetchId(Long bookId) {
         try {
             Optional<InventoryEntity> findIdInventory = inventoryRepository.findById(bookId);
             if (findIdInventory.isPresent()) {
                 APIResponse<InventoryEntity> apiResponse = APIResponse.<InventoryEntity>builder()
-                        .data((InventoryEntity) findIdInventory.get())
+                        .data(findIdInventory.get())
                         .build();
 
                 return ResponseEntity.ok(apiResponse);
@@ -83,34 +79,18 @@ public class InventoryServiceImp implements InventoryService {
 
     @Override
     @Transactional
-    public ResponseEntity<APIResponse> fetchAllData() {
-        List<InventoryEntity> inventoryBooks = inventoryRepository.findAll();
-        if (inventoryBooks.isEmpty()) {
-            throw new InventoryServiceException("None");
-        }
-//        return inventoryBooks;
-        List<InventoryEntity> inventoryResponses = new ArrayList<>();
-        inventoryBooks.forEach(inventoryEntity -> inventoryResponses.add(
-                InventoryEntity.builder()
-                        .bookId(inventoryEntity.getBookId())
-                        .bookPrice(inventoryEntity.getBookPrice())
-                        .bookQuantity(inventoryEntity.getBookQuantity())
-                        .build()
-        ));
-        APIResponse apiResponse = APIResponse.builder()
-                .data(inventoryResponses)
-                .build();
+    public ResponseEntity<APIResponse<?>> fetchAllData(List<Long> ids) {
+       var list = inventoryRepository.findAllById(ids);
 
-        //Return the ResponseEntity with the APIResponse
-        return ResponseEntity.ok(apiResponse);
-
+       APIResponse<List<InventoryEntity>> apiResponse = APIResponse.<List<InventoryEntity>>builder().data(list).build();
+       return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<APIResponse> deleteInventoryById(Long bookId) {
+    public ResponseEntity<APIResponse<?>> deleteInventoryById(Long bookId) {
         try {
             if (inventoryRepository.existsById(bookId)) {
                 inventoryRepository.deleteById(bookId);
-                APIResponse apiResponse = APIResponse.builder()
+                APIResponse<String> apiResponse = APIResponse.<String>builder()
                         .data("Successfully deleted")
                         .build();
                 return ResponseEntity.ok(apiResponse);
@@ -118,7 +98,7 @@ public class InventoryServiceImp implements InventoryService {
                 throw new InventoryServiceException("Not Found");
             }
         } catch (Exception e) {
-            throw new InventoryServiceException("Error");
+            throw new InventoryServiceException(e.getMessage());
         }
     }
 }

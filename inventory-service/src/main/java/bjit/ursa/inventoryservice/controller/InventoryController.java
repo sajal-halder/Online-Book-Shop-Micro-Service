@@ -16,23 +16,23 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @PostMapping("/update/{bookId}")
-    public ResponseEntity<APIResponse> updateInventory(@PathVariable Long bookId, @RequestBody InventoryEntity inventoryEntity) {
+    public ResponseEntity<APIResponse<?>> updateInventory(@PathVariable Long bookId, @RequestBody InventoryEntity inventoryEntity) {
         return inventoryService.updateBooks(bookId, inventoryEntity);
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<APIResponse> fetchId(@PathVariable Long bookId) {
+    public ResponseEntity<APIResponse<?>> fetchId(@PathVariable Long bookId) {
         return inventoryService.fetchId(bookId);
 
     }
 
-    @GetMapping("/")
-    public ResponseEntity<APIResponse> fetchAllData(@RequestParam List<Long> id) {
-        return inventoryService.fetchAllData();
+    @PostMapping("/")
+    public ResponseEntity<APIResponse<?>> fetchAllData(@RequestBody List<Long> ids) {
+        return inventoryService.fetchAllData(ids);
     }
 
     @DeleteMapping("/delete/{bookId}")
-    public ResponseEntity<APIResponse> deleteInventoryById(@PathVariable Long bookId) {
+    public ResponseEntity<APIResponse<?>> deleteInventoryById(@PathVariable Long bookId) {
         return inventoryService.deleteInventoryById(bookId);
     }
 }
