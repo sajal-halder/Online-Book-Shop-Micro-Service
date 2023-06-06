@@ -28,6 +28,14 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/book-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/book-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/config-server" />
         <option name="modules">
           <set>
@@ -48,6 +56,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/discovery-server" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/inventory-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/inventory-service" />
           </set>
         </option>
       </GradleProjectSettings>
