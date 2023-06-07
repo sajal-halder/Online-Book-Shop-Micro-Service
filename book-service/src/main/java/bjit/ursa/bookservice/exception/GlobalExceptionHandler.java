@@ -14,18 +14,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<APIResponse> returnNotFoundException(Exception ex) {
         if(ex instanceof BookServiceException) {
 
-            APIResponse<BookEntity> apiResponse = APIResponse.<BookEntity>builder()
-                    .error_message(ex.getMessage())
-                    .build();
+            APIResponse<BookEntity> apiResponse = new APIResponse<>(null,ex.getMessage());
 
             // Return the ResponseEntity with the APIResponse
             return ResponseEntity.ok(apiResponse);
 
         } else {
             // Some other operation
-            APIResponse<BookEntity> apiResponse = APIResponse.<BookEntity>builder()
-                    .error_message(ex.getMessage())
-                    .build();
+            APIResponse<BookEntity> apiResponse = new APIResponse<>(null,ex.getMessage());
             return ResponseEntity.ok(apiResponse);
         }
     }

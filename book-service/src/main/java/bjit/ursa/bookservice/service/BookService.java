@@ -16,5 +16,5 @@ public interface BookService {
 
     ResponseEntity<APIResponse<?>> getBookById(Long bookId);
 
-    ResponseEntity<APIResponse<?>> buyBook(Long bookId, Double price);
+    ResponseEntity<APIResponse<?>> buyBook(Long bookId, Integer quantity);
 }

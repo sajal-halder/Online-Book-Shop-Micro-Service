@@ -2,10 +2,7 @@ package bjit.ursa.bookservice.service.impl;
 
 import bjit.ursa.bookservice.entity.BookEntity;
 import bjit.ursa.bookservice.exception.BookServiceException;
-import bjit.ursa.bookservice.model.APIResponse;
-import bjit.ursa.bookservice.model.APIResponse2;
-import bjit.ursa.bookservice.model.BookModel;
-import bjit.ursa.bookservice.model.InventoryModel;
+import bjit.ursa.bookservice.model.*;
 import bjit.ursa.bookservice.repository.BookRepository;
 import bjit.ursa.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +22,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImplementation implements BookService {
 
-   // private RestTemplate restTemplate;
+    // private RestTemplate restTemplate;
 
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
+
+
     @Override
     @Transactional
     public ResponseEntity<APIResponse<?>> addBooks(BookModel bookModel) {
@@ -57,21 +56,19 @@ public class BookServiceImplementation implements BookService {
             //saving to book db
             bookRepository.save(book);
             //api call to inventory service
-            APIResponse<InventoryModel> response =restTemplate.postForObject("http://localhost:9094/update/" + book.getBook_id(),
-                            inventoryModel,
-                            APIResponse.class);
-            if(response.getData() == null){
-                throw new BookServiceException("from inventory "+response.getError_message());
+            APIResponseWithInventory response = restTemplate.postForObject("http://localhost:9094/update/" + book.getBook_id(),
+                    inventoryModel,
+                    APIResponseWithInventory.class);
+            if (response.getData() == null) {
+                throw new BookServiceException("from inventory " + response.getError_message());
             }
-             bookModel.setBook_id(book.getBook_id());
-            APIResponse<BookModel> apiResponse = APIResponse.<BookModel>builder()
-                    .data(bookModel)
-                    .build();
+            bookModel.setBook_id(book.getBook_id());
+            APIResponse<BookModel> apiResponse = new APIResponse<BookModel>(bookModel,null);
 
             // Return the ResponseEntity with the APIResponse
             return ResponseEntity.ok(apiResponse);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new BookServiceException(e.getMessage());
         }
 
@@ -79,7 +76,7 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     @Transactional
-    public ResponseEntity<APIResponse<?>> updateBooks(Long bookId , BookModel model) {
+    public ResponseEntity<APIResponse<?>> updateBooks(Long bookId, BookModel model) {
 
         try {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
@@ -98,27 +95,25 @@ public class BookServiceImplementation implements BookService {
                         .bookId(updatedBook.getBook_id())
                         .bookQuantity(model.getQuantity())
                         .bookPrice(model.getPrice()).build();
-                APIResponse<InventoryModel> response =restTemplate.postForObject("http://localhost:9094/update/" + bookId,
+                APIResponseWithInventory response = restTemplate.postForObject("http://localhost:9094/update/" + bookId,
                         inventoryModel,
-                        APIResponse.class);
-                if(response.getData() == null){
-                    throw new BookServiceException("from inventory "+response.getError_message());
+                       APIResponseWithInventory.class);
+                if (response.getData() == null) {
+                    throw new BookServiceException("from inventory " + response.getError_message());
                 }
                 model.setBook_id(bookId);
 
-                APIResponse<BookModel> apiResponse = APIResponse.<BookModel>builder()
-                        .data(model)
-                        .build();
+                APIResponse<BookModel> apiResponse =  new APIResponse<BookModel>(model,null);
                 // Return the ResponseEntity with the APIResponse
                 return ResponseEntity.ok(apiResponse);
 
-               // return new ResponseEntity<>(updatedBook, HttpStatus.OK);
+                // return new ResponseEntity<>(updatedBook, HttpStatus.OK);
             } else {
                 throw new BookServiceException("Book not found");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            throw  new BookServiceException(e.getMessage());
+            throw new BookServiceException(e.getMessage());
         }
     }
 
@@ -134,14 +129,13 @@ public class BookServiceImplementation implements BookService {
             List<Long> bookIds = books.stream().map(BookEntity::getBook_id).toList();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<List<Long>> requestEntity = new HttpEntity<>(bookIds,headers);
+            HttpEntity<List<Long>> requestEntity = new HttpEntity<>(bookIds, headers);
 
-            ResponseEntity<APIResponse2> response =restTemplate.exchange(
-                    "http://localhost:9094/",HttpMethod.POST,
-                    requestEntity,APIResponse2.class);
-            APIResponse2 listAPIResponse = response.getBody();
-            if(listAPIResponse.getData()==null){
-                throw  new BookServiceException(listAPIResponse.getError_message());
+            APIResponseWithInventoryList listAPIResponse = restTemplate.exchange(
+                    "http://localhost:9094/", HttpMethod.POST,
+                    requestEntity, APIResponseWithInventoryList.class).getBody();
+            if (listAPIResponse.getData() == null) {
+                throw new BookServiceException(listAPIResponse.getError_message());
             }
 
             List<InventoryModel> inventoryModelList = listAPIResponse.getData();
@@ -154,24 +148,24 @@ public class BookServiceImplementation implements BookService {
                                 .bookName(bookEntity.getBookName())
                                 .authorName(bookEntity.getAuthorName())
                                 .genre(bookEntity.getGenre())
-                                .price(inventoryModelList.stream().filter(i->i.getBookId().equals(bookEntity.getBook_id())).findAny().get().getBookPrice())
-                                .quantity(inventoryModelList.stream().filter(i->i.getBookId().equals(bookEntity.getBook_id())).findAny().get().getBookQuantity())
+                                .price(inventoryModelList.stream().filter(i -> i.getBookId().equals(bookEntity.getBook_id())).findAny().get().getBookPrice())
+                                .quantity(inventoryModelList.stream().filter(i -> i.getBookId().equals(bookEntity.getBook_id())).findAny().get().getBookQuantity())
                                 .build()
                 );
             });
 
-           APIResponse<List<BookModel>> apiResponse = APIResponse.<List<BookModel>>builder().data(modelList).build();
-           return ResponseEntity.ok(apiResponse);
+            APIResponse<List<BookModel>> apiResponse = new APIResponse<List<BookModel>>(modelList,null);
+            return ResponseEntity.ok(apiResponse);
 
 
-        }catch (Exception e){
-            throw  new BookServiceException(e.getMessage());
+        } catch (Exception e) {
+            throw new BookServiceException(e.getMessage());
         }
-
 
 
         // return ResponseEntity.ok(bookResponses);
     }
+
     @Override
     @Transactional
     public ResponseEntity<APIResponse<?>> deleteBookById(Long bookId) {
@@ -179,21 +173,21 @@ public class BookServiceImplementation implements BookService {
             if (bookRepository.existsById(bookId)) {
                 bookRepository.deleteById(bookId);
 
-                String message ="Book is deleted successfully";
+                String message = "Book is deleted successfully";
 
-                APIResponse response =restTemplate.exchange(
-                        "http://localhost:9094/delete/" +bookId,HttpMethod.DELETE,
-                        new HttpEntity<>(new HttpHeaders()),APIResponse.class
+                APIResponse response = restTemplate.exchange(
+                        "http://localhost:9094/delete/" + bookId, HttpMethod.DELETE,
+                        new HttpEntity<>(new HttpHeaders()), APIResponse.class
                 ).getBody();
-                if(response.getData()==null){
-                    throw  new BookServiceException(response.getError_message());
+                if (response.getData() == null) {
+                    throw new BookServiceException(response.getError_message());
                 }
                 // Return the ResponseEntity with the APIResponse
                 return ResponseEntity.ok(response);
             } else {
                 throw new BookServiceException("Book not found");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new BookServiceException(e.getMessage());
         }
     }
@@ -206,25 +200,22 @@ public class BookServiceImplementation implements BookService {
             if (optionalBook.isPresent()) {
 
 
-
-                APIResponse response = restTemplate.getForObject(
-                        "http://localhost:9094/"+bookId,APIResponse.class);
-                if(response.getData() == null){
-                    throw new BookServiceException("from inventory "+response.getError_message());
+                APIResponseWithInventory response = restTemplate.getForObject(
+                        "http://localhost:9094/" + bookId, APIResponseWithInventory.class);
+                if (response.getData() == null) {
+                    throw new BookServiceException("from inventory " + response.getError_message());
                 }
-                LinkedHashMap<String,?> data = (LinkedHashMap<String, ?>) response.getData();
+
                 BookModel bookModel = BookModel.builder()
                         .book_id(bookId)
                         .bookName(optionalBook.get().getBookName())
                         .authorName(optionalBook.get().getAuthorName())
                         .genre(optionalBook.get().getGenre())
-                        .price((Double) data.get("bookPrice"))
-                        .quantity((Integer) data.get("bookQuantity"))
+                        .price(response.getData().getBookPrice())
+                        .quantity(response.getData().getBookQuantity())
                         .build();
 
-                APIResponse apiResponse = APIResponse.builder()
-                        .data(bookModel)
-                        .build();
+                APIResponse<BookModel> apiResponse = new APIResponse<>(bookModel,null);
 
                 // Return the ResponseEntity with the APIResponse
                 return ResponseEntity.ok(apiResponse);
@@ -240,7 +231,19 @@ public class BookServiceImplementation implements BookService {
     }
 
     @Override
-    public ResponseEntity<APIResponse<?>> buyBook(Long bookId, Double price) {
+    public ResponseEntity<APIResponse<?>> buyBook(Long bookId, Integer quantity) {
+        try {
+            APIResponse<InventoryModel> response =  restTemplate.getForObject(
+                    "http://localhost:9094/" + bookId, APIResponse.class);
+
+            if (response.getData() == null) {
+                throw new BookServiceException("from inventory " + response.getError_message());
+            }
+
+
+        }catch (Exception e ){
+            throw new BookServiceException(e.getMessage());
+        }
         return null;
     }
 

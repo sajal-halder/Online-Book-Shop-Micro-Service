@@ -41,6 +41,6 @@ public class BookController {
 
     @PostMapping("/book/buy")
     public ResponseEntity<APIResponse<?>> buyBook(@RequestBody BookModel bookModel){
-        return bookService.buyBook(bookModel.getBook_id() , bookModel.getPrice());
+        return bookService.buyBook(bookModel.getBook_id() , bookModel.getQuantity());
     }
 }
