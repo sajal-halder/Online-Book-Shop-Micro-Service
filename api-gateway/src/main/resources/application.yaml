@@ -16,7 +16,7 @@ spring:
         id: book-service
         uri: lb://book-service
         predicates:
-          - Path= /book-service/create, /book-service/update , /book-service/delete/**, /book-service/book/all,/book-service/book/id/**
+          - Path= /book-service/create, /book-service/update , /book-service/delete/**
         filters:
           - name : AuthenticationFilter
             args :
@@ -26,13 +26,23 @@ spring:
         id: book-service
         uri: lb://book-service
         predicates:
-          - Path=/book-service/book/**
+          - Path=/book-service/book/buy
         filters:
           - name: AuthenticationFilter
             args:
               role: USER
-
       routes[3]:
+        id: book-service
+        uri: lb://book-service
+        predicates:
+          - Path=/book-service/book/all ,/book-service/book/id/**,
+        filters:
+          - name: AuthenticationFilter
+            args:
+              role: ANY_USER
+
+
+      routes[4]:
         id: inventory-service
         uri: lb://inventory-service
         predicates:

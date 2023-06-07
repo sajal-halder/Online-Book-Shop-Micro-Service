@@ -38,12 +38,14 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         }
         List<String> roles = jwtService.extractUserRoles(token);
 
-        if(!roles.contains(config.getRole())) {
+        if( !roles.isEmpty() && roles.contains(config.getRole())) {
+            return chain.filter(exchange);
+        }
+        if(config.getRole().equals("ANY_USER")){
+            return chain.filter(exchange);
+        }
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
-        }
-
-        return chain.filter(exchange);
     };
 }
 

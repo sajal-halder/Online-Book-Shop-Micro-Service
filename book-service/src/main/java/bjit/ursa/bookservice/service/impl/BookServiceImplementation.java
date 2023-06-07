@@ -245,7 +245,7 @@ public class BookServiceImplementation implements BookService {
                     .bookId(response.getData().getBookId())
                     .bookQuantity(response.getData().getBookQuantity()-quantity)
                     .bookPrice(response.getData().getBookPrice()).build();
-            APIResponseWithInventory updateResponse = restTemplate.postForObject("http://localhost:9094/update/" + bookId,
+            APIResponseWithInventory updateResponse = restTemplate.postForObject("http://localhost:8080/inventory-service/update/" + bookId,
                     inventoryModel,
                     APIResponseWithInventory.class);
             if (updateResponse.getData() == null) {
