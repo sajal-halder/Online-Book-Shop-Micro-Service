@@ -239,4 +239,9 @@ public class BookServiceImplementation implements BookService {
         }
     }
 
+    @Override
+    public ResponseEntity<APIResponse<?>> buyBook(Long bookId, Double price) {
+        return null;
+    }
+
 }

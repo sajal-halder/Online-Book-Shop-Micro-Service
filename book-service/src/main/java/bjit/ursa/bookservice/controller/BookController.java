@@ -38,4 +38,9 @@ public class BookController {
     public ResponseEntity<APIResponse<?>> getBookById(@PathVariable Long bookId) {
         return bookService.getBookById(bookId);
     }
+
+    @PostMapping("/book/buy")
+    public ResponseEntity<APIResponse<?>> buyBook(@RequestBody BookModel bookModel){
+        return bookService.buyBook(bookModel.getBook_id() , bookModel.getPrice());
+    }
 }

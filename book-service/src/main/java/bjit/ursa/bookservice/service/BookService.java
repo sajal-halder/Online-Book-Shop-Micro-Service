@@ -15,4 +15,6 @@ public interface BookService {
     ResponseEntity<APIResponse<?>> deleteBookById(Long bookId);
 
     ResponseEntity<APIResponse<?>> getBookById(Long bookId);
+
+    ResponseEntity<APIResponse<?>> buyBook(Long bookId, Double price);
 }
