@@ -3,6 +3,7 @@ package bjit.ursa.bookservice.service.impl;
 import bjit.ursa.bookservice.entity.BookEntity;
 import bjit.ursa.bookservice.exception.BookServiceException;
 import bjit.ursa.bookservice.model.APIResponse;
+import bjit.ursa.bookservice.model.APIResponse2;
 import bjit.ursa.bookservice.model.BookModel;
 import bjit.ursa.bookservice.model.InventoryModel;
 import bjit.ursa.bookservice.repository.BookRepository;
@@ -135,10 +136,10 @@ public class BookServiceImplementation implements BookService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<List<Long>> requestEntity = new HttpEntity<>(bookIds,headers);
 
-            ResponseEntity<APIResponse> response =restTemplate.exchange(
+            ResponseEntity<APIResponse2> response =restTemplate.exchange(
                     "http://localhost:9094/",HttpMethod.POST,
-                    requestEntity,APIResponse.class);
-            APIResponse<List<InventoryModel>> listAPIResponse = response.getBody();
+                    requestEntity,APIResponse2.class);
+            APIResponse2 listAPIResponse = response.getBody();
             if(listAPIResponse.getData()==null){
                 throw  new BookServiceException(listAPIResponse.getError_message());
             }
