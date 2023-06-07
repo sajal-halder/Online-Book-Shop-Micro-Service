@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-
+@RequestMapping("/book-service")
 public class BookController {
 
     private final BookService bookService ;
@@ -24,9 +24,9 @@ public class BookController {
         return bookService.deleteBookById(bookId);
     }
 
-    @PutMapping("/update/{bookId}")
-    public ResponseEntity<APIResponse<?>> updateBook(@PathVariable Long bookId , @RequestBody BookModel bookModel) {
-        return bookService.updateBooks(bookId , bookModel);
+    @PutMapping("/update")
+    public ResponseEntity<APIResponse<?>> updateBook( @RequestBody BookModel bookModel) {
+        return bookService.updateBooks( bookModel);
     }
 
     @GetMapping("/book/all")
@@ -34,7 +34,7 @@ public class BookController {
         return bookService.getAllBooks();
     }
 
-    @GetMapping("/book/{bookId}")
+    @GetMapping("/book/id/{bookId}")
     public ResponseEntity<APIResponse<?>> getBookById(@PathVariable Long bookId) {
         return bookService.getBookById(bookId);
     }

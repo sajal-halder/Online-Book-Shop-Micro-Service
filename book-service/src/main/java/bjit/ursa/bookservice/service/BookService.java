@@ -10,7 +10,7 @@ public interface BookService {
 
     ResponseEntity<APIResponse<?>> getAllBooks();
 
-    ResponseEntity<APIResponse<?>> updateBooks(Long bookId , BookModel bookModel);
+    ResponseEntity<APIResponse<?>> updateBooks( BookModel bookModel);
 
     ResponseEntity<APIResponse<?>> deleteBookById(Long bookId);
 
