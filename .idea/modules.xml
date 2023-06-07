@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Online-Book-Shop-Micro-Service.iml" filepath="$PROJECT_DIR$/.idea/Online-Book-Shop-Micro-Service.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/auth-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auth-server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/book-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/book-service.main.iml" />
     </modules>
   </component>
 </project>
