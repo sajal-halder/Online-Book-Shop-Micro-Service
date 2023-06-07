@@ -56,7 +56,7 @@
  
      The configuration properties of all the micro-services will be stored in the cloud (GitHub repo). We will fetch the configuration properties via this cloud config server.
 
-<br>
+     <br>
 
 - Service 04: Authentication Service
  
@@ -65,7 +65,7 @@
    - /auth-server/register: Both USER and ADMIN will use this API to register them.
    - /auth-server/login: Both USER and ADMIN will use this API for login. After login, this API will return them a JWT token. Later which will be used in the API gateway for accessing the micro-services.
 
-<br>
+     <br>
 
 - Service 05: Book Service
  
@@ -78,7 +78,7 @@
     - /book-service/book/{id}: Both ADMIN and USER can use this API to fetch a single book data from DB. This API will also call Service 06: Book Inventory Service to fetch price and quantity information for that book.
     - /book-service/book/buy: Only USER can use this API to buy books from the online book store. In the request body USER need to pass book id and quantity for the desired book that he/she wants to purchase. After successful purchase, this API will call Service 06: Book Inventory Service to update the quantity information for that book.
 
-<br>
+     <br>
 
 - Service 06: Book Inventory
 
@@ -94,7 +94,6 @@
 
 ## API EndPoints
 <hr>
-
 
 - /auth-server/register
 
