@@ -7,16 +7,15 @@ import bjit.ursa.bookservice.repository.BookRepository;
 import bjit.ursa.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class BookServiceImplementation implements BookService {
 
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
+
 
 
     @Override
@@ -69,6 +69,9 @@ public class BookServiceImplementation implements BookService {
             return ResponseEntity.ok(apiResponse);
 
         } catch (Exception e) {
+            if(e instanceof RestClientException){
+                throw new BookServiceException("Inventory Service no available");
+            }
             throw new BookServiceException(e.getMessage());
         }
 
@@ -111,7 +114,9 @@ public class BookServiceImplementation implements BookService {
                 throw new BookServiceException("Book not found");
             }
         } catch (Exception e) {
-
+            if(e instanceof RestClientException){
+                throw new BookServiceException("Inventory Service no available");
+            }
             throw new BookServiceException(e.getMessage());
         }
     }
@@ -126,6 +131,7 @@ public class BookServiceImplementation implements BookService {
             }
 
             List<Long> bookIds = books.stream().map(BookEntity::getBook_id).toList();
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<List<Long>> requestEntity = new HttpEntity<>(bookIds, headers);
@@ -158,6 +164,9 @@ public class BookServiceImplementation implements BookService {
 
 
         } catch (Exception e) {
+            if(e instanceof RestClientException){
+                throw new BookServiceException("Inventory Service no available");
+            }
             throw new BookServiceException(e.getMessage());
         }
 
@@ -187,6 +196,9 @@ public class BookServiceImplementation implements BookService {
                 throw new BookServiceException("Book not found");
             }
         } catch (Exception e) {
+            if(e instanceof RestClientException){
+                throw new BookServiceException("Inventory Service no available");
+            }
             throw new BookServiceException(e.getMessage());
         }
     }
@@ -224,7 +236,9 @@ public class BookServiceImplementation implements BookService {
                 throw new BookServiceException("Book not found");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            if(e instanceof RestClientException){
+                throw new BookServiceException("Inventory Service no available");
+            }
             throw new BookServiceException(e.getMessage());
         }
     }
@@ -232,6 +246,11 @@ public class BookServiceImplementation implements BookService {
     @Override
     public ResponseEntity<APIResponse<?>> buyBook(Long bookId, Integer quantity) {
         try {
+            Optional<BookEntity> book = bookRepository.findById(bookId);
+            if(book.isEmpty()){
+                throw  new BookServiceException("NO book Exist with this id");
+            }
+
             APIResponseWithInventory response =  restTemplate.getForObject(
                     "http://localhost:8080/inventory-service/" + bookId, APIResponseWithInventory.class);
 
@@ -241,22 +260,35 @@ public class BookServiceImplementation implements BookService {
             if(quantity>response.getData().getBookQuantity()){
                 throw new BookServiceException("Exceed quantity");
             }
+
+
             InventoryModel inventoryModel = InventoryModel.builder()
                     .bookId(response.getData().getBookId())
                     .bookQuantity(response.getData().getBookQuantity()-quantity)
                     .bookPrice(response.getData().getBookPrice()).build();
-            APIResponseWithInventory updateResponse = restTemplate.postForObject("http://localhost:8080/inventory-service/update/" + bookId,
+            APIResponseWithInventory inventoryResponse = restTemplate.postForObject("http://localhost:8080/inventory-service/update/" + bookId,
                     inventoryModel,
                     APIResponseWithInventory.class);
-            if (updateResponse.getData() == null) {
-                throw new BookServiceException("from inventory " + updateResponse.getError_message());
+            if (inventoryResponse.getData() == null) {
+                throw new BookServiceException("from inventory " + inventoryResponse.getError_message());
             }
 
-            APIResponse<String> finalResponse = new APIResponse<>("Buy book operation successful",null);
+            BuyBookResponse buyBookResponse = BuyBookResponse.builder()
+                    .bookId(bookId)
+                    .bookName(book.get().getBookName())
+                    .quantity(quantity)
+                    .totalPrice(quantity*inventoryResponse.getData().getBookPrice())
+                    .build();
+
+
+            APIResponse<BuyBookResponse> finalResponse = new APIResponse<>(buyBookResponse,null);
 
             return ResponseEntity.ok(finalResponse);
 
         }catch (Exception e ){
+            if(e instanceof RestClientException){
+                throw new BookServiceException("Inventory Service no available");
+            }
             throw new BookServiceException(e.getMessage());
         }
 

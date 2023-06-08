@@ -28,20 +28,21 @@ public class BookController {
        return CompletableFuture.supplyAsync(()->bookService.addBooks(bookModel));
     }
 
-//    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
-//    @TimeLimiter(name="book_inventory")
-//    @Retry(name="book_inventory")
+    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
+    @TimeLimiter(name="book_inventory")
+    @Retry(name="book_inventory")
     @DeleteMapping("/delete/{bookId}")
-    public ResponseEntity<APIResponse<?>> deleteBookById(@PathVariable Long bookId) {
-        return bookService.deleteBookById(bookId);
+    public CompletableFuture<ResponseEntity<APIResponse<?>>>deleteBookById(@PathVariable Long bookId) {
+        return CompletableFuture.supplyAsync(()->bookService.deleteBookById(bookId));
     }
-//    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
-//    @TimeLimiter(name="book_inventory")
-//    @Retry(name="book_inventory")
+    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
+    @TimeLimiter(name="book_inventory")
+    @Retry(name="book_inventory")
     @PutMapping("/update")
-    public ResponseEntity<APIResponse<?>> updateBook( @RequestBody BookModel bookModel) {
-        return bookService.updateBooks( bookModel);
+    public CompletableFuture<ResponseEntity<APIResponse<?>>> updateBook( @RequestBody BookModel bookModel) {
+        return CompletableFuture.supplyAsync(()->bookService.updateBooks( bookModel));
     }
+
     @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
     @TimeLimiter(name="book_inventory")
     @Retry(name="book_inventory")
@@ -49,22 +50,23 @@ public class BookController {
     public CompletableFuture<ResponseEntity<APIResponse<?>>> getAllBooks(){
         return CompletableFuture.supplyAsync(bookService::getAllBooks);
     }
-//    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
-//    @TimeLimiter(name="book_inventory")
-//    @Retry(name="book_inventory")
+    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
+    @TimeLimiter(name="book_inventory")
+    @Retry(name="book_inventory")
     @GetMapping("/book/id/{bookId}")
-    public ResponseEntity<APIResponse<?>> getBookById(@PathVariable Long bookId) {
-        return bookService.getBookById(bookId);
+    public CompletableFuture<ResponseEntity<APIResponse<?>>> getBookById(@PathVariable Long bookId) {
+        return CompletableFuture.supplyAsync(()-> bookService.getBookById(bookId));
     }
-//    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
-//    @TimeLimiter(name="book_inventory")
-//    @Retry(name="book_inventory")
+
+    @CircuitBreaker(name="book_inventory",fallbackMethod = "fallbackMethod")
+    @TimeLimiter(name="book_inventory")
+    @Retry(name="book_inventory")
     @PostMapping("/book/buy")
-    public ResponseEntity<APIResponse<?>> buyBook(@RequestBody BookModel bookModel){
-        return bookService.buyBook(bookModel.getBook_id() , bookModel.getQuantity());
+    public CompletableFuture<ResponseEntity<APIResponse<?>>> buyBook(@RequestBody BookModel bookModel){
+        return CompletableFuture.supplyAsync(()-> bookService.buyBook(bookModel.getBook_id() , bookModel.getQuantity()));
     }
 
     public CompletableFuture<ResponseEntity<APIResponse<?>>> fallbackMethod(RuntimeException e){
-        return CompletableFuture.supplyAsync(()->ResponseEntity.status(HttpStatus.NOT_FOUND).body(new APIResponse<>(null,"Inventory Service is Unavailable")));
+        return CompletableFuture.supplyAsync(()->ResponseEntity.status(HttpStatus.NOT_FOUND).body(new APIResponse<>(null,e.getMessage())));
     }
 }

@@ -8,6 +8,9 @@ group = 'bjit.ursa'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+
+apply plugin: "io.spring.dependency-management"
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -39,6 +42,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+	compileOnly 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
 }
 
 
