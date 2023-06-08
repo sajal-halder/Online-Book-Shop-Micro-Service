@@ -193,12 +193,15 @@
     }`
 
   - Output For Unsuccessful Database Operation
+    
     When This book already exists
+    
     `{
     "error_message": "A book with the same name and author already exists."
     }`
 
-    When Inventory Service is unavaila 
+    When Inventory Service is Unavailable 
+    
     `{
     "error_message": "Inventory Service is Unavailable"
     }`
