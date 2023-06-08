@@ -102,18 +102,52 @@
     ` {
     "email":"rahatibnhossain@gmail.com",
     "password":"1234",
-    "roles": ["ADMIN","USER"]
+    "roles": ["ADMIN"]
     } `
 
   - Output For Successful Database Operation
   
+    ` { "data": {
+        "message": "Successfully registered with the  email rahatibnhossain@gmail.com."
+    } }`
+
+  - Output For Unsuccessful Database Operation
+  
     ` {
-    "email":"rahatibnhossain3@gmail.com",
+    "error_message": "The requested email rahatibnhossain@gmail.com already registered"             
+     }`
+
+
+- /auth-server/login
+
+  - Input 
+
+    ` {
+    "email":"rahatibnhossain@gmail.com",
     "password":"1234",
-    "roles": ["ADMIN","USER"]
+    "roles": ["ADMIN"]
     } `
 
+  - Output For Successful Login
+  
+    `{
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJBRE1JTiIsIlVTRVIiXSwic3ViIjoicmFoYXRpYm5ob3NzYWluQGdtYWlsLmNvbSIsImlhdCI6MTY4NjE5NDYyOSwiZXhwIjoxNjg2MTk2MDY5fQ.XS-nJvncEOwbkZAlgNGWO0-BhZFEYZ-6-duS5AZXnkE"
+    }
+}`
 
--
+  - Output For Unsuccessful Login
+  
+    `{
+    "error_message": "Invalid Email and Password"
+     }`
+
+
+
+
+
+
+
+
 
 
