@@ -398,3 +398,106 @@
 
 
 
+<br>
+
+
+
+- /inventory-service/update/{bookId}
+
+   - Method : PUT  
+   - Full Path 
+    
+     `http://localhost:8080/inventory-service/update/1`
+
+  - Input 
+
+    ` { "bookPrice": 20.0,
+        "bookQuantity": 4 }`
+
+  - Output For Successful Update Inventory Operation
+  
+    `{ "data": {
+        "bookId": 1,
+        "bookPrice": 20.0,
+        "bookQuantity": 4
+    }}`
+
+  - Output For Unsuccessful Update Inventory Operation
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Not found" }`
+
+
+
+<br>
+
+
+- /inventory-service/{bookId}
+
+   - Method : GET  
+   - Full Path 
+    
+     `http://localhost:8080/inventory-service/1`
+
+
+
+  - Output For Successful Get Single Inventory Operation
+  
+    `{ "data": {
+        "bookId": 1,
+        "bookPrice": 20.0,
+        "bookQuantity": 4
+    }}`
+
+  - Output For Unsuccessful Get Single Inventory Operation
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Not Found" }`
+
+
+
+<br>
+
+
+- /inventory-service/
+
+   - Method : POST  
+   - Full Path 
+    
+     `http://localhost:8080/inventory-service`
+
+
+  - Input 
+
+    ` [1,2]`
+
+  - Output For Successful Get Multiple Inventory Operation
+  
+    `{
+    "data": [
+        {
+            "bookId": 1,
+            "bookPrice": 20.0,
+            "bookQuantity": 4
+        },
+        {
+            "bookId": 2,
+            "bookPrice": 20.0,
+            "bookQuantity": 2
+        }
+    ]}`
+
+  - Output For Unsuccessful Get Multiple Inventory Operation
+  
+    When Book Id is invalid
+
+    `{
+    "data": [] }`
+
+
+
+<br>
