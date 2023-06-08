@@ -97,23 +97,417 @@
 
 - /auth-server/register
 
+   - Method : POST  
+   - Full Path 
+    
+     `http://localhost:8080/auth-server/register`
+
+  - Input 
+  
+   
+
+    ` {
+    "email":"rahatibnhossain@gmail.com",
+    "password":"1234",
+    "roles": ["ADMIN"]
+    } `
+
+  - Output For Successful Database Operation
+  
+    ` { "data": {
+        "message": "Successfully registered with the  email rahatibnhossain@gmail.com."
+    } }`
+
+  - Output For Unsuccessful Database Operation
+  
+    ` {
+    "error_message": "The requested email rahatibnhossain@gmail.com already registered"             
+     }`
+
+<br>
+
+- /auth-server/login
+
+   - Method : POST  
+   - Full Path 
+    
+     `http://localhost:8080/auth-server/login`
+
+
   - Input 
 
     ` {
     "email":"rahatibnhossain@gmail.com",
     "password":"1234",
-    "roles": ["ADMIN","USER"]
+    "roles": ["ADMIN"]
     } `
+
+  - Output For Successful Login
+  
+    `{
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJBRE1JTiIsIlVTRVIiXSwic3ViIjoicmFoYXRpYm5ob3NzYWluQGdtYWlsLmNvbSIsImlhdCI6MTY4NjE5NDYyOSwiZXhwIjoxNjg2MTk2MDY5fQ.XS-nJvncEOwbkZAlgNGWO0-BhZFEYZ-6-duS5AZXnkE"
+    }
+}`
+
+  - Output For Unsuccessful Login
+  
+    `{
+    "error_message": "Invalid Email and Password"
+     }`
+
+<br>
+
+
+- /book-service/create
+  
+
+
+   - Method : POST  
+   - Full Path 
+    
+     `http://localhost:8080/book-service/create`
+
+
+  - Input 
+
+    ` {
+     "bookName": "The Fire 2",
+     "authorName": "Rahat",
+     "genre": "Paris Times",
+    "price": 20.0,
+    "quantity":4
+    }`
 
   - Output For Successful Database Operation
   
+    `{
+    "data": {
+        "book_id": 1,
+        "bookName": "The Fire 2",
+        "authorName": "Rahat",
+        "genre": "Paris Times",
+        "price": 20.0,
+        "quantity": 4
+    }
+    }`
+
+  - Output For Unsuccessful Database Operation
+    
+    When This book already exists
+    
+    `{
+    "error_message": "A book with the same name and author already exists."
+    }`
+
+    When Inventory Service is Unavailable 
+    
+    `{
+    "error_message": "Inventory Service is Unavailable"
+    }`
+
+    
+
+     <br>
+
+- /book-service/update
+
+   - Method : PUT  
+   - Full Path 
+    
+     `http://localhost:8080/book-service/update`
+
+  - Input 
+
     ` {
-    "email":"rahatibnhossain3@gmail.com",
-    "password":"1234",
-    "roles": ["ADMIN","USER"]
-    } `
+        "book_id": 4,
+        "bookName": "The Fire 6",
+        "authorName": "Rahat Ibna Hossain",
+        "genre": "Paris Times",
+        "price": 20.0,
+        "quantity": 4 }`
+
+  - Output For Successful Update Book Operation
+  
+    `{
+    "data": {
+        "book_id": 4,
+        "bookName": "The Fire 6",
+        "authorName": "Rahat Ibna Hossain",
+        "genre": "Paris Times",
+        "price": 20.0,
+        "quantity": 4
+    }}`
+
+  - Output For Unsuccessful Update Book Operation
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Book not found" }`
+
+    
+    When Inventory Service is Unavailable
+
+    `{
+    "error_message": "Inventory Service is Unavailable"
+    }`
 
 
--
+<br>
+
+- /book-service/delete
+
+   - Method : DELETE  
+   - Full Path 
+    
+     `http://localhost:8080/book-service/delete{bookId}`
+
+  - Output For Successful Delete Book Operation
+  
+    `{
+    "data": "Successfully deleted"
+    }`
+
+  - Output For Unsuccessful Delete Book Operation
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Book not found" }`
+
+    
+    When Inventory Service is Unavailable
+
+    `{
+    "error_message": "Inventory Service is Unavailable"
+    }`
 
 
+<br>
+
+- /book-service/book/all
+
+   - Method : GET  
+   - Full Path 
+    
+     `http://localhost:8080/book-service/book/all`
+
+
+
+  - Output For Successful Getting All Books Operation
+  
+    `{
+    "data": [
+        {
+            "book_id": 1,
+            "bookName": "The Fire 2",
+            "authorName": "Rahat",
+            "genre": "Paris Times",
+            "price": 20.0,
+            "quantity": 4
+        },
+        {
+            "book_id": 2,
+            "bookName": "The Fire 3",
+            "authorName": "Rahat",
+            "genre": "Paris Times",
+            "price": 20.0,
+            "quantity": 4
+        }
+    ]   
+    }`
+
+  - Output For Unsuccessful Getting All Books Operation
+  
+      When Inventory Service is Unavailable
+
+    `{
+    "error_message": "Inventory Service is Unavailable"
+    }`
+
+<br>
+
+
+
+
+
+
+
+- /book-service/book/id/{BookId}
+
+   - Method : GET  
+   - Full Path 
+    
+     `http://localhost:8080/book-service/book/id/2`
+
+
+
+  - Output For Successful Getting Single Book Operation
+  
+    `{
+    "data": {
+        "book_id": 2,
+        "bookName": "The Fire 3",
+        "authorName": "Rahat",
+        "genre": "Paris Times",
+        "price": 20.0,
+        "quantity": 4
+    }
+}`
+
+  - Output For Unsuccessful Getting Single Book Operation
+  
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Book not found" }`
+
+    
+    When Inventory Service is Unavailable
+
+    `{
+    "error_message": "Inventory Service is Unavailable"
+    }`
+
+
+
+- /book-service/book/buy
+
+   - Method : POST  
+   - Full Path 
+    
+     `http://localhost:8080/book-service/book/buy`
+
+  - Input 
+
+    ` {
+        "book_id": 2,
+        "quantity": 2
+    }`
+
+  - Output For Successful Update Book Operation
+  
+    `{
+    "data": "Buy book operation successful" }`
+
+  - Output For Unsuccessful Update Book Operation
+  
+    When Book Quantity Exists the Stock Limit
+
+    `{
+    "error_message": "Exceed quantity" }`
+
+    
+    When Inventory Service is Unavailable
+
+    `{
+    "error_message": "Inventory Service is Unavailable"
+    }`
+
+
+
+<br>
+
+
+
+- /inventory-service/update/{bookId}
+
+   - Method : PUT  
+   - Full Path 
+    
+     `http://localhost:8080/inventory-service/update/1`
+
+  - Input 
+
+    ` { "bookPrice": 20.0,
+        "bookQuantity": 4 }`
+
+  - Output For Successful Update Inventory Operation
+  
+    `{ "data": {
+        "bookId": 1,
+        "bookPrice": 20.0,
+        "bookQuantity": 4
+    }}`
+
+  - Output For Unsuccessful Update Inventory Operation
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Not found" }`
+
+
+
+<br>
+
+
+- /inventory-service/{bookId}
+
+   - Method : GET  
+   - Full Path 
+    
+     `http://localhost:8080/inventory-service/1`
+
+
+
+  - Output For Successful Get Single Inventory Operation
+  
+    `{ "data": {
+        "bookId": 1,
+        "bookPrice": 20.0,
+        "bookQuantity": 4
+    }}`
+
+  - Output For Unsuccessful Get Single Inventory Operation
+  
+    When Book Id is invalid
+
+    `{
+    "error_message": "Not Found" }`
+
+
+
+<br>
+
+
+- /inventory-service/
+
+   - Method : POST  
+   - Full Path 
+    
+     `http://localhost:8080/inventory-service`
+
+
+  - Input 
+
+    ` [1,2]`
+
+  - Output For Successful Get Multiple Inventory Operation
+  
+    `{
+    "data": [
+        {
+            "bookId": 1,
+            "bookPrice": 20.0,
+            "bookQuantity": 4
+        },
+        {
+            "bookId": 2,
+            "bookPrice": 20.0,
+            "bookQuantity": 2
+        }
+    ]}`
+
+  - Output For Unsuccessful Get Multiple Inventory Operation
+  
+    When Book Id is invalid
+
+    `{
+    "data": [] }`
+
+
+
+<br>
