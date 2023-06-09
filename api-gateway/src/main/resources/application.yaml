@@ -5,8 +5,8 @@ eureka:
 server:
   port: 8080
 spring:
-  cloud :
-    gateway :
+  cloud:
+    gateway:
       routes[0]:
         id: auth-server
         uri: lb://auth-server
@@ -18,9 +18,9 @@ spring:
         predicates:
           - Path= /book-service/create, /book-service/update , /book-service/delete/**
         filters:
-          - name : AuthenticationFilter
-            args :
-              role : ADMIN
+          - name: AuthenticationFilter
+            args:
+              role: ADMIN
 
       routes[2]:
         id: book-service
@@ -40,15 +40,11 @@ spring:
           - name: AuthenticationFilter
             args:
               role: ANY_USER
-
-
       routes[4]:
         id: inventory-service
         uri: lb://inventory-service
         predicates:
           - Path=/inventory-service/**
-
-
 application.name: api-gateway
 
 

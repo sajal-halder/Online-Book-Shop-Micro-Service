@@ -9,16 +9,15 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class AuthServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(AuthServerApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(AuthServerApplication.class, args);
-	}
-
-	@Bean
-	CommandLineRunner run(RoleService roleService) {
-		return args -> {
-			roleService.addRole(RoleEnum.ADMIN);
-			roleService.addRole(RoleEnum.USER);
-		};
-	}
+    @Bean
+    CommandLineRunner run(RoleService roleService) {
+        return args -> {
+            roleService.addRole(RoleEnum.ADMIN);
+            roleService.addRole(RoleEnum.USER);
+        };
+    }
 }

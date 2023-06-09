@@ -19,35 +19,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
     private final AccountRepository accountRepository;
-    @Bean
-    public UserDetailsService userDetailsService(){
-       return new UserDetailsService() {
-           @Override
-           public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-               var user = accountRepository.findByEmail(email);
-               if(user.isEmpty()){
-                   throw new BadCredentialsException("INVALID_EMAIL");
-               }
-               AccountEntity accountEntity = user.get();
-               List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-               accountEntity.getRoles().forEach(roleEntity -> authorities.add(new SimpleGrantedAuthority(roleEntity.getRoleName())));
-               return new User(
-                     accountEntity.getEmail(), accountEntity.getPassword(),authorities
-               );
-           }
-       };
-    }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+                var user = accountRepository.findByEmail(email);
+                if (user.isEmpty()) {
+                    throw new BadCredentialsException("INVALID_EMAIL");
+                }
+                AccountEntity accountEntity = user.get();
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                accountEntity.getRoles().forEach(roleEntity -> authorities.add(new SimpleGrantedAuthority(roleEntity.getRoleName())));
+                return new User(
+                        accountEntity.getEmail(), accountEntity.getPassword(), authorities
+                );
+            }
+        };
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

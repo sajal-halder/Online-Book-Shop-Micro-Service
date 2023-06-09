@@ -5,13 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.util.Set;
 import javax.persistence.*;
-
-
-
-
 
 @Entity
 @Table(name = "accounts_credentials")
@@ -25,7 +20,6 @@ public class AccountEntity {
     private Long userId;
     private String email;
     private String password;
-
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "account_roles",
@@ -33,6 +27,4 @@ public class AccountEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> roles;
-
-
 }

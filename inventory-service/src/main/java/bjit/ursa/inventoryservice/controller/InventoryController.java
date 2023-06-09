@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/inventory-service")
 public class InventoryController {
-
     private final InventoryService inventoryService;
 
     @PostMapping("/update/{bookId}")
@@ -25,7 +24,6 @@ public class InventoryController {
     @GetMapping("/{bookId}")
     public ResponseEntity<APIResponse<?>> fetchId(@PathVariable Long bookId) {
         return inventoryService.fetchId(bookId);
-
     }
 
     @PostMapping("/deduct")

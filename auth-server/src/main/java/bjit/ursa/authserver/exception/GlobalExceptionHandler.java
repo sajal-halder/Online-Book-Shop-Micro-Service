@@ -1,7 +1,5 @@
-package bjit.ursa.authserver.controller;
+package bjit.ursa.authserver.exception;
 
-import bjit.ursa.authserver.exception.AccountAlreadyExists;
-import bjit.ursa.authserver.exception.InvalidAuthenticationCredentials;
 import bjit.ursa.authserver.model.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +15,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({InvalidAuthenticationCredentials.class})
     public ResponseEntity<APIResponse> InvalidCredentials(Exception ex) {
-        return  new ResponseEntity<>( APIResponse.builder().error_message(ex.getMessage()).build(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(APIResponse.builder().error_message(ex.getMessage()).build(), HttpStatus.NOT_FOUND);
     }
 }

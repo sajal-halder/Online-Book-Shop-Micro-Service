@@ -1,10 +1,8 @@
 package bjit.ursa.authserver.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 import javax.persistence.*;
 
@@ -19,5 +17,3 @@ public class RoleEntity {
     private Long roleId;
     private String roleName;
 }
-
-

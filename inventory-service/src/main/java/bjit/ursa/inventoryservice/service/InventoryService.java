@@ -12,7 +12,7 @@ public interface InventoryService {
 
     ResponseEntity<APIResponse<?>> fetchId(Long bookId);
 
-    ResponseEntity<APIResponse<?>> fetchAllData(List<Long >ids);
+    ResponseEntity<APIResponse<?>> fetchAllData(List<Long> ids);
 
     ResponseEntity<APIResponse<?>> deleteInventoryById(Long bookId);
 

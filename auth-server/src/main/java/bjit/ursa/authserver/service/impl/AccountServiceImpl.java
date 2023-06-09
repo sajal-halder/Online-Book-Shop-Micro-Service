@@ -9,7 +9,6 @@ import bjit.ursa.authserver.repositoty.AccountRepository;
 import bjit.ursa.authserver.service.AccountService;
 import bjit.ursa.authserver.service.JwtService;
 import bjit.ursa.authserver.service.RoleService;
-import com.fasterxml.jackson.core.JsonFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -44,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
             registerRequest.getRoles().forEach(value -> roles.add(roleService.getRole(value)));
             AccountEntity accountEntity1 = AccountEntity.builder().email(registerRequest.getEmail()).password(passwordEncoder.encode(registerRequest.getPassword())).roles(roles).build();
             AccountEntity savedEntity = accountRepository.save(accountEntity1);
-            return new ResponseEntity<>( APIResponse.builder().data(new RegisterResponse("Successfully registered with the  email " + savedEntity.getEmail() + ".")).build(), HttpStatus.CREATED);
+            return new ResponseEntity<>(APIResponse.builder().data(new RegisterResponse("Successfully registered with the  email " + savedEntity.getEmail() + ".")).build(), HttpStatus.CREATED);
         }
     }
 
@@ -57,7 +55,6 @@ public class AccountServiceImpl implements AccountService {
         }
         String jwtToken = jwtService.generateToken(userDetailsService.loadUserByUsername(loginRequest.getEmail()));
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).build();
-        return new ResponseEntity<>( APIResponse.builder().data(loginResponse).build(), HttpStatus.OK);
-
+        return new ResponseEntity<>(APIResponse.builder().data(loginResponse).build(), HttpStatus.OK);
     }
 }

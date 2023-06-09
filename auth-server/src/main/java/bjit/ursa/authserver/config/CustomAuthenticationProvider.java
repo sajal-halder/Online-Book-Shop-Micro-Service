@@ -11,30 +11,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
         if (userDetails == null) {
             throw new BadCredentialsException("INVALID_EMAIL");
         }
-
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("INVALID_PASSWORD");
         }
-
         return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
     }
 
@@ -42,6 +35,4 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authenticationType) {
         return authenticationType.equals(UsernamePasswordAuthenticationToken.class);
     }
-
-
 }

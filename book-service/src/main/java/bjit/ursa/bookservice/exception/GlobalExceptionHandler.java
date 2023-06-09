@@ -9,20 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler({BookServiceException.class, ArithmeticException.class})
-    public ResponseEntity<APIResponse> returnNotFoundException(Exception ex) {
-        if(ex instanceof BookServiceException) {
-
-            APIResponse<BookEntity> apiResponse = new APIResponse<>(null,ex.getMessage());
-
-            // Return the ResponseEntity with the APIResponse
-            return ResponseEntity.ok(apiResponse);
-
-        } else {
-            // Some other operation
-            APIResponse<BookEntity> apiResponse = new APIResponse<>(null,ex.getMessage());
-            return ResponseEntity.ok(apiResponse);
-        }
+    @ExceptionHandler({BookServiceException.class})
+    public ResponseEntity<APIResponse> BookServiceExceptionHandler(Exception ex) {
+        APIResponse<BookEntity> apiResponse = new APIResponse<>(null, ex.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 }
