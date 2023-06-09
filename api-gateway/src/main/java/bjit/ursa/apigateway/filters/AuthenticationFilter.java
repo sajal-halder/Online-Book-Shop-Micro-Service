@@ -1,4 +1,4 @@
-package bjit.ursa.apigateway.config.filters;
+package bjit.ursa.apigateway.filters;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import bjit.ursa.apigateway.JwtService;

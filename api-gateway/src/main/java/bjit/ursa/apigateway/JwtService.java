@@ -48,7 +48,6 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyByte);
     }
 
-
     public  boolean isTokenValid(String token){
         try {
             Claims claims = Jwts
@@ -64,7 +63,6 @@ public class JwtService {
             return false;
         }
     }
-
 
     private Date extractExpiration(String token){
         return  extractClaim(token, Claims::getExpiration);
