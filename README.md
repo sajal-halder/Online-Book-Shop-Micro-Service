@@ -20,6 +20,7 @@
 - JDK 17
 - Gradle 8.1.1
 - Sprint Boot 2.7.12
+  
 
 <br> 
 
@@ -32,6 +33,15 @@
 - Authentication Database Name : auth_db
 - Book Service Database Name : book_db
 - Inventory Service Database Name : inventory_db
+
+<br>
+
+
+## Additional Details
+<hr>
+
+- Zipkin Port: 9411
+
 
 <br>
 

@@ -73,7 +73,7 @@ public class BookServiceImplementation implements BookService {
 
         } catch (Exception e) {
             if(e instanceof RestClientException){
-                throw new BookServiceException("Inventory Service no available");
+                throw new BookServiceException("Inventory Service is not available");
             }
             throw new BookServiceException(e.getMessage());
         }
@@ -118,7 +118,7 @@ public class BookServiceImplementation implements BookService {
             }
         } catch (Exception e) {
             if(e instanceof RestClientException){
-                throw new BookServiceException("Inventory Service no available");
+                throw new BookServiceException("Inventory Service is not available");
             }
             throw new BookServiceException(e.getMessage());
         }
@@ -169,7 +169,7 @@ public class BookServiceImplementation implements BookService {
 
         } catch (Exception e) {
             if(e instanceof RestClientException){
-                throw new BookServiceException("Inventory Service no available");
+                throw new BookServiceException("Inventory Service is not available");
             }
             throw new BookServiceException(e.getMessage());
         }
@@ -202,7 +202,7 @@ public class BookServiceImplementation implements BookService {
             }
         } catch (Exception e) {
             if(e instanceof RestClientException){
-                throw new BookServiceException("Inventory Service no available");
+                throw new BookServiceException("Inventory Service is not available");
             }
             throw new BookServiceException(e.getMessage());
         }
@@ -244,7 +244,7 @@ public class BookServiceImplementation implements BookService {
             }
         } catch (Exception e) {
             if(e instanceof RestClientException){
-                throw new BookServiceException("Inventory Service no available");
+                throw new BookServiceException("Inventory Service is not available");
             }
             throw new BookServiceException(e.getMessage());
         }
@@ -288,7 +288,7 @@ public class BookServiceImplementation implements BookService {
 
         }catch (Exception e ){
             if(e instanceof RestClientException){
-                throw new BookServiceException("Inventory Service no available");
+                throw new BookServiceException("Inventory Service is not available");
             }
             throw new BookServiceException(e.getMessage());
         }
