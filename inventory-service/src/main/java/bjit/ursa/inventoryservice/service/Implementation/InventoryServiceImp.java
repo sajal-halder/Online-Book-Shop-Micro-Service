@@ -3,6 +3,7 @@ package bjit.ursa.inventoryservice.service.Implementation;
 import bjit.ursa.inventoryservice.entity.InventoryEntity;
 import bjit.ursa.inventoryservice.exception.InventoryServiceException;
 import bjit.ursa.inventoryservice.model.APIResponse;
+import bjit.ursa.inventoryservice.model.BuyBookRequest;
 import bjit.ursa.inventoryservice.repository.InventoryRepository;
 import bjit.ursa.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class InventoryServiceImp implements InventoryService {
                 return ResponseEntity.ok(apiResponse);
             }
         } catch (Exception e) {
-            throw new InventoryServiceException("An error occurred while retrieving the book by ID");
+            throw new InventoryServiceException(e.getMessage());
         }
     }
 
@@ -97,6 +98,36 @@ public class InventoryServiceImp implements InventoryService {
             } else {
                 throw new InventoryServiceException("Not Found");
             }
+        } catch (Exception e) {
+            throw new InventoryServiceException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<APIResponse<?>> deductQuantity(BuyBookRequest buyBookRequest) {
+        try {
+            Optional<InventoryEntity> updateInventory = inventoryRepository.findById(buyBookRequest.getId());
+                if(updateInventory.isEmpty()){
+                    throw  new InventoryServiceException("No Book with matching id found on inventory");
+                }
+                InventoryEntity inventoryEntity = updateInventory.get();
+                // Update the book entity with the new values from the request model
+                if(inventoryEntity.getBookQuantity()< buyBookRequest.getQuantity()){
+                    throw  new InventoryServiceException("Exceeded Quantity");
+                }
+
+                inventoryEntity.setBookQuantity(inventoryEntity.getBookQuantity()- buyBookRequest.getQuantity());
+
+                // Save the updated book entity
+                InventoryEntity updatedBook = inventoryRepository.save(inventoryEntity);
+
+
+                APIResponse<InventoryEntity> apiResponse = new APIResponse<>(updatedBook,null);
+
+                return ResponseEntity.ok(apiResponse);
+
+
         } catch (Exception e) {
             throw new InventoryServiceException(e.getMessage());
         }

@@ -5,6 +5,8 @@ import bjit.ursa.bookservice.exception.BookServiceException;
 import bjit.ursa.bookservice.model.*;
 import bjit.ursa.bookservice.repository.BookRepository;
 import bjit.ursa.bookservice.service.BookService;
+import brave.Span;
+import brave.Tracer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 
@@ -25,6 +27,7 @@ public class BookServiceImplementation implements BookService {
 
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
+    private final Tracer tracer;
 
 
 
@@ -124,6 +127,7 @@ public class BookServiceImplementation implements BookService {
     @Override
     @Transactional
     public ResponseEntity<APIResponse<?>> getAllBooks() {
+
         try {
             List<BookEntity> books = bookRepository.findAll();
             if (books.isEmpty()) {
@@ -171,6 +175,7 @@ public class BookServiceImplementation implements BookService {
         }
 
 
+
         // return ResponseEntity.ok(bookResponses);
     }
 
@@ -206,7 +211,9 @@ public class BookServiceImplementation implements BookService {
     @Override
     @Transactional
     public ResponseEntity<APIResponse<?>> getBookById(Long bookId) {
+
         try {
+
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isPresent()) {
 
@@ -241,33 +248,27 @@ public class BookServiceImplementation implements BookService {
             }
             throw new BookServiceException(e.getMessage());
         }
+        finally {
+
+        }
     }
 
     @Override
     public ResponseEntity<APIResponse<?>> buyBook(Long bookId, Integer quantity) {
-        try {
+        Span inventoryLookup = tracer.nextSpan().name("Buy Book");
+        try(Tracer.SpanInScope spanInScope = tracer.withSpanInScope(inventoryLookup.start())){
             Optional<BookEntity> book = bookRepository.findById(bookId);
             if(book.isEmpty()){
                 throw  new BookServiceException("NO book Exist with this id");
             }
 
-            APIResponseWithInventory response =  restTemplate.getForObject(
-                    "http://localhost:8080/inventory-service/" + bookId, APIResponseWithInventory.class);
 
-            if (response.getData() == null) {
-                throw new BookServiceException("from inventory " + response.getError_message());
-            }
-            if(quantity>response.getData().getBookQuantity()){
-                throw new BookServiceException("Exceed quantity");
-            }
-
-
-            InventoryModel inventoryModel = InventoryModel.builder()
-                    .bookId(response.getData().getBookId())
-                    .bookQuantity(response.getData().getBookQuantity()-quantity)
-                    .bookPrice(response.getData().getBookPrice()).build();
-            APIResponseWithInventory inventoryResponse = restTemplate.postForObject("http://localhost:8080/inventory-service/update/" + bookId,
-                    inventoryModel,
+            BuyBookRequest buyBookRequest = BuyBookRequest.builder()
+                    .id(bookId)
+                    .quantity(quantity)
+                    .build();
+            APIResponseWithInventory inventoryResponse = restTemplate.postForObject("http://localhost:8080/inventory-service/deduct" ,
+                    buyBookRequest,
                     APIResponseWithInventory.class);
             if (inventoryResponse.getData() == null) {
                 throw new BookServiceException("from inventory " + inventoryResponse.getError_message());
@@ -290,6 +291,9 @@ public class BookServiceImplementation implements BookService {
                 throw new BookServiceException("Inventory Service no available");
             }
             throw new BookServiceException(e.getMessage());
+        }
+        finally {
+            inventoryLookup.finish();
         }
 
     }

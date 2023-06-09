@@ -2,6 +2,7 @@ package bjit.ursa.inventoryservice.controller;
 
 import bjit.ursa.inventoryservice.entity.InventoryEntity;
 import bjit.ursa.inventoryservice.model.APIResponse;
+import bjit.ursa.inventoryservice.model.BuyBookRequest;
 import bjit.ursa.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,11 @@ public class InventoryController {
     public ResponseEntity<APIResponse<?>> fetchId(@PathVariable Long bookId) {
         return inventoryService.fetchId(bookId);
 
+    }
+
+    @PostMapping("/deduct")
+    public ResponseEntity<APIResponse<?>> deductQuantity(@RequestBody BuyBookRequest buyBookRequest) {
+        return inventoryService.deductQuantity(buyBookRequest);
     }
 
     @PostMapping("/")
