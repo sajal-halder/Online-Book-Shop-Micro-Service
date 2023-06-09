@@ -1,6 +1,7 @@
 package bjit.ursa.apigateway.filters;
 
 import bjit.ursa.apigateway.service.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +13,7 @@ import java.util.List;
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
     private final JwtService jwtService;
+
 
     public AuthenticationFilter(JwtService jwtService) {
         super(Config.class);

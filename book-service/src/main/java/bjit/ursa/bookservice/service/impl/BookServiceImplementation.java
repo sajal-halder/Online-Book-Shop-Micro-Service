@@ -8,6 +8,7 @@ import bjit.ursa.bookservice.service.BookService;
 import brave.Span;
 import brave.Tracer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,8 @@ public class BookServiceImplementation implements BookService {
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
     private final Tracer tracer;
+    @Value("${INTERNAL_KEY}")
+    private String INTERNAL_KEY;
     private final HttpHeaders headers = new HttpHeaders();
 
     @Override
@@ -48,7 +51,7 @@ public class BookServiceImplementation implements BookService {
             //saving to book db
             bookRepository.save(book);
 
-            headers.set("ALLOWED","TRUE");
+            headers.set("ALLOWED",INTERNAL_KEY);
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<InventoryModel> requestEntity = new HttpEntity<>(inventoryModel, headers);
             //api call to inventory service
@@ -89,7 +92,7 @@ public class BookServiceImplementation implements BookService {
                         .bookQuantity(model.getQuantity())
                         .bookPrice(model.getPrice()).build();
 
-                headers.set("ALLOWED","TRUE");
+                headers.set("ALLOWED",INTERNAL_KEY);
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity<InventoryModel> requestEntity = new HttpEntity<>(inventoryModel, headers);
                 APIResponseWithInventory response = restTemplate.exchange("http://localhost:8080/inventory-service/update/" + model.getBook_id(),
@@ -124,7 +127,7 @@ public class BookServiceImplementation implements BookService {
                 throw new BookServiceException("There is no book available in the stock");
             }
             List<Long> bookIds = books.stream().map(BookEntity::getBook_id).toList();
-            headers.set("ALLOWED","TRUE");
+            headers.set("ALLOWED",INTERNAL_KEY);
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<List<Long>> requestEntity = new HttpEntity<>(bookIds, headers);
             APIResponseWithInventoryList listAPIResponse = restTemplate.exchange(
@@ -166,7 +169,7 @@ public class BookServiceImplementation implements BookService {
                 String message = "Book is deleted successfully";
 
 
-                headers.set("ALLOWED","TRUE");
+                headers.set("ALLOWED",INTERNAL_KEY);
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity requestEntity = new HttpEntity<>(headers);
                 APIResponse response = restTemplate.exchange(
@@ -198,7 +201,7 @@ public class BookServiceImplementation implements BookService {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isPresent()) {
 
-                headers.set("ALLOWED","TRUE");
+                headers.set("ALLOWED",INTERNAL_KEY);
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity requestEntity = new HttpEntity<>(headers);
 
@@ -246,7 +249,7 @@ public class BookServiceImplementation implements BookService {
                     .build();
 
 
-            headers.set("ALLOWED","TRUE");
+            headers.set("ALLOWED",INTERNAL_KEY);
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<BuyBookRequest> requestEntity = new HttpEntity<>(buyBookRequest, headers);
 
