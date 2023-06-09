@@ -45,6 +45,7 @@ spring:
         uri: lb://inventory-service
         predicates:
           - Path=/inventory-service/**
+
 application.name: api-gateway
 
 
