@@ -24,6 +24,7 @@ public class BookServiceImplementation implements BookService {
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
     private final Tracer tracer;
+    private final HttpHeaders headers = new HttpHeaders();
 
     @Override
     @Transactional
@@ -46,10 +47,15 @@ public class BookServiceImplementation implements BookService {
                     .build();
             //saving to book db
             bookRepository.save(book);
+
+            headers.set("ALLOWED","TRUE");
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<InventoryModel> requestEntity = new HttpEntity<>(inventoryModel, headers);
             //api call to inventory service
-            APIResponseWithInventory response = restTemplate.postForObject("http://localhost:8080/inventory-service/update/" + book.getBook_id(),
-                    inventoryModel,
-                    APIResponseWithInventory.class);
+            APIResponseWithInventory response = restTemplate.exchange("http://localhost:8080/inventory-service/update/" + book.getBook_id(),HttpMethod.POST
+                    ,requestEntity,
+                    APIResponseWithInventory.class).getBody();
+
             if (response.getData() == null) {
                 throw new BookServiceException("from inventory " + response.getError_message());
             }
@@ -82,9 +88,15 @@ public class BookServiceImplementation implements BookService {
                         .bookId(updatedBook.getBook_id())
                         .bookQuantity(model.getQuantity())
                         .bookPrice(model.getPrice()).build();
-                APIResponseWithInventory response = restTemplate.postForObject("http://localhost:8080/inventory-service/update/" + model.getBook_id(),
-                        inventoryModel,
-                        APIResponseWithInventory.class);
+
+                headers.set("ALLOWED","TRUE");
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity<InventoryModel> requestEntity = new HttpEntity<>(inventoryModel, headers);
+                APIResponseWithInventory response = restTemplate.exchange("http://localhost:8080/inventory-service/update/" + model.getBook_id(),
+                        HttpMethod.POST,requestEntity,
+                        APIResponseWithInventory.class).getBody();
+
+
                 if (response.getData() == null) {
                     throw new BookServiceException("from inventory " + response.getError_message());
                 }
@@ -112,7 +124,7 @@ public class BookServiceImplementation implements BookService {
                 throw new BookServiceException("There is no book available in the stock");
             }
             List<Long> bookIds = books.stream().map(BookEntity::getBook_id).toList();
-            HttpHeaders headers = new HttpHeaders();
+            headers.set("ALLOWED","TRUE");
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<List<Long>> requestEntity = new HttpEntity<>(bookIds, headers);
             APIResponseWithInventoryList listAPIResponse = restTemplate.exchange(
@@ -152,10 +164,17 @@ public class BookServiceImplementation implements BookService {
             if (bookRepository.existsById(bookId)) {
                 bookRepository.deleteById(bookId);
                 String message = "Book is deleted successfully";
+
+
+                headers.set("ALLOWED","TRUE");
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity requestEntity = new HttpEntity<>(headers);
                 APIResponse response = restTemplate.exchange(
                         "http://localhost:8080/inventory-service/delete/" + bookId, HttpMethod.DELETE,
-                        new HttpEntity<>(new HttpHeaders()), APIResponse.class
+                        requestEntity, APIResponse.class
                 ).getBody();
+
+
                 if (response.getData() == null) {
                     throw new BookServiceException(response.getError_message());
                 }
@@ -178,11 +197,18 @@ public class BookServiceImplementation implements BookService {
         try {
             Optional<BookEntity> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isPresent()) {
-                APIResponseWithInventory response = restTemplate.getForObject(
-                        "http://localhost:8080/inventory-service/" + bookId, APIResponseWithInventory.class);
+
+                headers.set("ALLOWED","TRUE");
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity requestEntity = new HttpEntity<>(headers);
+
+                APIResponseWithInventory response = restTemplate.exchange(
+                        "http://localhost:8080/inventory-service/" + bookId,HttpMethod.GET,requestEntity, APIResponseWithInventory.class).getBody();
                 if (response.getData() == null) {
                     throw new BookServiceException("from inventory " + response.getError_message());
                 }
+
+
                 BookModel bookModel = BookModel.builder()
                         .book_id(bookId)
                         .bookName(optionalBook.get().getBookName())
@@ -218,12 +244,21 @@ public class BookServiceImplementation implements BookService {
                     .id(bookId)
                     .quantity(quantity)
                     .build();
-            APIResponseWithInventory inventoryResponse = restTemplate.postForObject("http://localhost:8080/inventory-service/deduct",
-                    buyBookRequest,
-                    APIResponseWithInventory.class);
+
+
+            headers.set("ALLOWED","TRUE");
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<BuyBookRequest> requestEntity = new HttpEntity<>(buyBookRequest, headers);
+
+
+            APIResponseWithInventory inventoryResponse = restTemplate.exchange("http://localhost:8080/inventory-service/deduct",
+                    HttpMethod.POST,
+                    requestEntity,
+                    APIResponseWithInventory.class).getBody();
             if (inventoryResponse.getData() == null) {
                 throw new BookServiceException("from inventory " + inventoryResponse.getError_message());
             }
+
             BuyBookResponse buyBookResponse = BuyBookResponse.builder()
                     .bookId(bookId)
                     .bookName(book.get().getBookName())
