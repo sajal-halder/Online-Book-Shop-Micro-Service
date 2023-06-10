@@ -29,11 +29,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             String token = null;
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                exchange.getResponse().getHeaders().add("Content-Type", "application/json");
+                String errorMessage = "{\"error_message\": \"No token found\"}";
+                exchange.getResponse().getWriter().write(errorMessage);
                 return exchange.getResponse().setComplete();
             }
             token = authorizationHeader.substring(7);
             if (!jwtService.isTokenValid(token)) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                exchange.getResponse().getHeaders().add("Content-Type", "application/json");
+                String errorMessage = "{\"error_message\": \"Invalid or Expired Token or \"}";
                 return exchange.getResponse().setComplete();
             }
             List<String> roles = jwtService.extractUserRoles(token);
@@ -44,6 +49,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 return chain.filter(exchange);
             }
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            exchange.getResponse().getHeaders().add("Content-Type", "application/json");
+            String errorMessage = "{\"error_message\": \"Not Authorized \"}";
             return exchange.getResponse().setComplete();
         };
     }
