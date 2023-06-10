@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
@@ -14,10 +15,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-    @NotEmpty(message = "email is required")
+    @Valid
+
+    @Email(message = "Email should be valid")
+    @NotEmpty(message = "Email is required")
     private String email;
-    @NotBlank(message = "password is required")
+    @NotEmpty(message = "Password is required")
     private String password;
-    @NotBlank(message = "roles is required")
+    @NotEmpty(message = "Role is required")
     private Set<String> roles;
 }

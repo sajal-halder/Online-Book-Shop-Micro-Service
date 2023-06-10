@@ -1,7 +1,6 @@
 package bjit.ursa.bookservice.controller;
 
-import bjit.ursa.bookservice.model.APIResponse;
-import bjit.ursa.bookservice.model.BookModel;
+import bjit.ursa.bookservice.model.*;
 import bjit.ursa.bookservice.service.BookService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -23,8 +23,8 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @PostMapping("/create")
-    public CompletableFuture<ResponseEntity<APIResponse<?>>> createBooks(@RequestBody BookModel bookModel) {
-        return CompletableFuture.supplyAsync(() -> bookService.addBooks(bookModel));
+    public CompletableFuture<ResponseEntity<APIResponse<?>>> createBooks(@Valid @RequestBody BookCreateRequest bookCreateRequest) {
+        return CompletableFuture.supplyAsync(() -> bookService.addBooks(bookCreateRequest));
     }
 
     @CircuitBreaker(name = "book_inventory", fallbackMethod = "fallbackMethod")
@@ -39,8 +39,8 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @PutMapping("/update")
-    public CompletableFuture<ResponseEntity<APIResponse<?>>> updateBook(@RequestBody BookModel bookModel) {
-        return CompletableFuture.supplyAsync(() -> bookService.updateBooks(bookModel));
+    public CompletableFuture<ResponseEntity<APIResponse<?>>> updateBook(@Valid @RequestBody UpdateBookRequest updateBookRequest) {
+        return CompletableFuture.supplyAsync(() -> bookService.updateBooks(updateBookRequest));
     }
 
     @CircuitBreaker(name = "book_inventory", fallbackMethod = "fallbackMethod")
@@ -63,8 +63,8 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @PostMapping("/book/buy")
-    public CompletableFuture<ResponseEntity<APIResponse<?>>> buyBook(@RequestBody BookModel bookModel) {
-        return CompletableFuture.supplyAsync(() -> bookService.buyBook(bookModel.getBook_id(), bookModel.getQuantity()));
+    public CompletableFuture<ResponseEntity<APIResponse<?>>> buyBook(@Valid @RequestBody BuyBookRequest buyBookRequest) {
+        return CompletableFuture.supplyAsync(() -> bookService.buyBook(buyBookRequest));
     }
 
     public CompletableFuture<ResponseEntity<APIResponse<?>>> fallbackMethod(RuntimeException e) {

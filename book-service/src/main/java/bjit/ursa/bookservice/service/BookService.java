@@ -1,19 +1,18 @@
 package bjit.ursa.bookservice.service;
 
-import bjit.ursa.bookservice.model.APIResponse;
-import bjit.ursa.bookservice.model.BookModel;
+import bjit.ursa.bookservice.model.*;
 import org.springframework.http.ResponseEntity;
 
 public interface BookService {
-    ResponseEntity<APIResponse<?>> addBooks(BookModel bookModel);
+    ResponseEntity<APIResponse<?>> addBooks(BookCreateRequest bookCreateRequest);
 
     ResponseEntity<APIResponse<?>> getAllBooks();
 
-    ResponseEntity<APIResponse<?>> updateBooks(BookModel bookModel);
+    ResponseEntity<APIResponse<?>> updateBooks(UpdateBookRequest updateBookRequest);
 
     ResponseEntity<APIResponse<?>> deleteBookById(Long bookId);
 
     ResponseEntity<APIResponse<?>> getBookById(Long bookId);
 
-    ResponseEntity<APIResponse<?>> buyBook(Long bookId, Integer quantity);
+    ResponseEntity<APIResponse<?>> buyBook( BuyBookRequest buyBookRequest);
 }

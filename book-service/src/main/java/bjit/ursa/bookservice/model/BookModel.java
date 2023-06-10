@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class BookModel {
-    private Long book_id;
+
+    private Long bookId;
     private String bookName;
     private String authorName;
     private String genre;
