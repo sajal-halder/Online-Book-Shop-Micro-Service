@@ -6,6 +6,9 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @PostMapping("/create")
+    @CacheEvict(value = "allBooks", allEntries = true)
     public CompletableFuture<ResponseEntity<APIResponse<?>>> createBooks(@Valid @RequestBody BookCreateRequest bookCreateRequest) {
         return CompletableFuture.supplyAsync(() -> bookService.addBooks(bookCreateRequest));
     }
@@ -39,6 +43,7 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @PutMapping("/update")
+    @CacheEvict(value = "allBooks", allEntries = true)
     public CompletableFuture<ResponseEntity<APIResponse<?>>> updateBook(@Valid @RequestBody UpdateBookRequest updateBookRequest) {
         return CompletableFuture.supplyAsync(() -> bookService.updateBooks(updateBookRequest));
     }
@@ -47,6 +52,7 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @GetMapping("/book/all")
+    @Cacheable("allBooks")
     public CompletableFuture<ResponseEntity<APIResponse<?>>> getAllBooks() {
         return CompletableFuture.supplyAsync(bookService::getAllBooks);
     }
@@ -63,6 +69,7 @@ public class BookController {
     @TimeLimiter(name = "book_inventory")
     @Retry(name = "book_inventory")
     @PostMapping("/book/buy")
+    @CacheEvict(value = "allBooks", allEntries = true)
     public CompletableFuture<ResponseEntity<APIResponse<?>>> buyBook(@Valid @RequestBody BuyBookRequest buyBookRequest) {
         return CompletableFuture.supplyAsync(() -> bookService.buyBook(buyBookRequest));
     }
